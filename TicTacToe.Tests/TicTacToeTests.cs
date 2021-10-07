@@ -21,5 +21,22 @@ namespace TicTacToe.Tests
             
             Assert.Equal(expectedBoard, board);
         }
+        
+        [Fact]
+        public void when_UpdateBoard_and_coordinatesEqualOneAndOne_then_update_TopLeftCorner()
+        {
+            string[][] expectedBoard = new string[][]
+            {
+                new string[] {"x", ".", "."},
+                new string[] {".", ".", "."},
+                new string[] {".", ".", "."},
+            };
+            
+            string[][] board = _board.GenerateBoard();
+
+            board = _board.UpdateBoard("x", 1, 1, board);
+            
+            Assert.Equal(expectedBoard, board);
+        }
     }
 }

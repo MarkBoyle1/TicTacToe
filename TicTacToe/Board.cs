@@ -11,5 +11,12 @@ namespace TicTacToe
 
             return board;
         }
+        
+        public string[][] UpdateBoard(string marker, int row, int column, string[][] board)
+        {
+            board[row - 1][column - 1] = marker;
+            
+            return board;
+        }
     }
 }
