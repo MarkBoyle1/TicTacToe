@@ -1,12 +1,10 @@
-using System;
-
 namespace TicTacToe
 {
-    public class UserInput
+    public class TestUserInput : IUserInput
     {
         public string GetCoordinates()
         {
-            return Console.ReadLine();
+            return "1,1";
         }
     }
 }
