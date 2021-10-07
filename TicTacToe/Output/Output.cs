@@ -8,5 +8,13 @@ namespace TicTacToe
         {
             Console.WriteLine(message);
         }
+
+        public void DisplayBoard(string[][] board)
+        {
+            foreach (var row in board)
+            {
+                Console.WriteLine(String.Join(',', row).Replace(',', ' '));
+            }
+        }
     }
 }
