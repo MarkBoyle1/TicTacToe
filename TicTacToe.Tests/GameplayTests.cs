@@ -5,7 +5,7 @@ namespace TicTacToe.Tests
     public class GameplayTests
     {
         private Board _board = new Board();
-        private Gameplay _gameplay = new Gameplay(new TestUserInput());
+        private Gameplay _gameplay = new Gameplay(new TestUserInput(), new Output());
 
         [Fact]
         public void when_MakeAMove_then_return_updatedBoard()

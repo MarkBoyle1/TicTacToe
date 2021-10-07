@@ -7,11 +7,13 @@ namespace TicTacToe
     {
         private string[][] board;
         private IUserInput _input;
+        private IOutput _output;
         private Board boardController;
 
-        public Gameplay(IUserInput input)
+        public Gameplay(IUserInput input, IOutput output)
         {
             _input = input;
+            _output = output;
             boardController = new Board();
         }
 
@@ -21,7 +23,7 @@ namespace TicTacToe
         }
         public string[][] MakeAMove()
         {
-            Console.WriteLine("Please select coordinates: ");
+            _output.DisplayMessage("Please select coordinates: ");
             string input = _input.GetCoordinates();
             int[] coordinates = ProcessCoordinates(input);
             return boardController.UpdateBoard("x", coordinates[0], coordinates[1], board);
@@ -46,7 +48,7 @@ namespace TicTacToe
             }
             else
             {
-                Console.WriteLine("Invalid Input.");
+                _output.DisplayMessage("Invalid Input.");
                 MakeAMove();
             }
 
