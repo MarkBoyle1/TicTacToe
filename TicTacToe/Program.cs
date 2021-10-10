@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TicTacToe
 {
@@ -6,7 +7,7 @@ namespace TicTacToe
     {
         static void Main(string[] args)
         {
-            Gameplay gameplay = new Gameplay(new UserInput(), new Output());
+            GameSetUp gameplay = new GameSetUp(new UserInput(), new Output());
             gameplay.RunProgram();
         }
     }

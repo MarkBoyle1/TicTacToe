@@ -3,7 +3,7 @@ using Xunit;
 
 namespace TicTacToe.Tests
 {
-    public class TicTacToeTests
+    public class BoardControllerTests
     {
         private Board _board = new Board();
         
@@ -34,7 +34,7 @@ namespace TicTacToe.Tests
             
             string[][] board = _board.GenerateBoard();
 
-            board = _board.UpdateBoard("x", 1, 1, board);
+            board = _board.UpdateBoard("x", 0, 0, board);
             
             Assert.Equal(expectedBoard, board);
         }
