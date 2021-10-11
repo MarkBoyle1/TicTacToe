@@ -5,21 +5,17 @@ namespace TicTacToe.Tests
 {
     public class GameplayTests
     {
-        private List<string> _listOfMovesXWins;
-        private List<string> _listOfMovesYWins;
-        private Gameplay _gameplayXWins;
-        private Gameplay _gameplayYWins;
+        private List<string> _listOfMovesOWins;
+        private Gameplay _gameplayOWins;
         private GameSetUp _gameSetUp;
         private List<Player> _playerList;
         public GameplayTests()
         {
-            _listOfMovesXWins = new List<string>() {"1,1", "1,2", "2,1", "1,3", "3,1"};
-            _listOfMovesYWins = new List<string>() {"1,1", "1,2", "2,1", "2,2", "1,3", "3,2"};
+            _listOfMovesOWins = new List<string>() {"1,1", "1,2", "2,1", "2,2", "1,3", "3,2"};
             
-            _gameplayXWins = new Gameplay(new TestUserInput(_listOfMovesXWins), new Output());
-            _gameplayYWins = new Gameplay(new TestUserInput(_listOfMovesYWins), new Output());
+            _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output());
 
-            _gameSetUp = new GameSetUp(new TestUserInput(_listOfMovesXWins), new Output());
+            _gameSetUp = new GameSetUp(new TestUserInput(_listOfMovesOWins), new Output());
             _playerList = new List<Player>()
             {
                 new Player("Player1", "x"),
@@ -36,48 +32,30 @@ namespace TicTacToe.Tests
         }
 
         [Fact]
-        public void when_CheckMoveIsValid_and_coordinatesPointToFreeSpace_then_return_true()
-        {
-            string[][] board = new string[][]
-            {
-                new string[] {".", ".", "."},
-                new string[] {".", ".", "."},
-                new string[] {".", ".", "."},
-            };
-
-            int[] input = new int[] {1,1};
-
-            Assert.True(_gameplayXWins.CheckMoveIsValid(input, board));
-        }
-        
-        [Fact]
         public void given_listOfMovesXWins_when_PlayOneGame_then_return_Player1()
         {
-            Assert.Equal("Player1", _gameplayXWins.PlayOneGame(_playerList));
-        }
-        
-        [Fact]
-        public void given_listOfMovesYWins_when_PlayOneGame_then_return_Player2()
-        {
-            Assert.Equal("Player2", _gameplayYWins.PlayOneGame(_playerList));
-        }
-        
-        [Fact]
-        public void given_listOfMovesYWins_when_PlayOneGame_then_return_Plasdf2()
-        {
-            List<string> _listOfMovesNormal = new List<string>() {"1,1", "1,2", "2,1", "1,3", "3,1"};
-            Gameplay _gameplayNormal = new Gameplay(new TestUserInput(_listOfMovesNormal), new Output());
+            List<string> listOfMovesXWins = new List<string>() {"1,1", "1,2", "2,1", "1,3", "3,1"};
+            Gameplay gameplayXWins = new Gameplay(new TestUserInput(listOfMovesXWins), new Output());
             
-            Assert.Equal("Player1", _gameplayNormal.PlayOneGame(_playerList));
+            Assert.Equal("Player1", gameplayXWins.PlayOneGame(_playerList));
         }
         
+        [Fact]
+        public void given_listOfMovesOWins_when_PlayOneGame_then_return_Player2()
+        {
+            _listOfMovesOWins = new List<string>() {"1,1", "1,2", "2,1", "2,2", "1,3", "3,2"};
+            _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output());
+            
+            Assert.Equal("Player2", _gameplayOWins.PlayOneGame(_playerList));
+        }
+
         [Fact]
         public void given_listOfMovesCreatesDraw_when_PlayOneGame_then_return_Draw()
         {
-            List<string> _listOfMovesNormal = new List<string>() {"1,1", "1,2", "2,1", "2,3", "3,3", "2,2", "1,3", "3,1", "3,2"};
-            Gameplay _gameplayNormal = new Gameplay(new TestUserInput(_listOfMovesNormal), new Output());
+            List<string> _listOfMovesDraw = new List<string>() {"1,1", "1,2", "2,1", "2,3", "3,3", "2,2", "1,3", "3,1", "3,2"};
+            Gameplay _gameplayDraw = new Gameplay(new TestUserInput(_listOfMovesDraw), new Output());
             
-            Assert.Equal("Draw", _gameplayNormal.PlayOneGame(_playerList));
+            Assert.Equal("Draw", _gameplayDraw.PlayOneGame(_playerList));
         }
     }
 }

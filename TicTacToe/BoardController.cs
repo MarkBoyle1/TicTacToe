@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace TicTacToe
 {
-    public class Board
+    public class BoardController
     {
         public string[][] GenerateBoard()
         {

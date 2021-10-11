@@ -9,16 +9,17 @@ namespace TicTacToe
         private string[][] _board;
         private IUserInput _input;
         private IOutput _output;
-        private Board boardController;
+        private BoardController boardController;
         private List<Player> _playerList;
         private Player _currentPlayer;
-        private Result _result;
+        public Result _result;
+        private int sizeOfGrid = 3;
 
         public Gameplay(IUserInput input, IOutput output)
         {
             _input = input;
             _output = output;
-            boardController = new Board();
+            boardController = new BoardController();
             _result = new Result();
         }
         
@@ -47,7 +48,7 @@ namespace TicTacToe
         {
             _output.DisplayMessage("Please select coordinates: ");
             string input = _input.GetCoordinates();
-            int[] coordinates = ProcessCoordinates(input);
+            Coordinates coordinates = ProcessCoordinates(input);
 
             if (!CheckMoveIsValid(coordinates, _board))
             {
@@ -55,30 +56,30 @@ namespace TicTacToe
                 MakeAMove(_currentPlayer);
             }
             
-            _board = boardController.UpdateBoard(_currentPlayer.Marker, coordinates[0], coordinates[1], _board);
+            _board = boardController.UpdateBoard(_currentPlayer.Marker, coordinates.Row, coordinates.Column, _board);
             _output.DisplayBoard(_board);
             
             return _board;
         }
 
-        public bool CheckMoveIsValid(int[] input, string[][] board)
+        private bool CheckMoveIsValid(Coordinates input, string[][] board)
         {
-            if (input[0] > 2 || input[1] > 2)
+            if (input.Row >= sizeOfGrid || input.Column >= sizeOfGrid)
             {
                 return false;
             }
             
-            return board[input[0]][input[1]] == ".";
+            return board[input.Row][input.Column] == ".";
         }
 
-        private int[] ProcessCoordinates(string input)
+        private Coordinates ProcessCoordinates(string input)
         {
             string[] stringArray = input.Split(',');
 
             int row = ValidateInput(stringArray[0]);
             int column = ValidateInput(stringArray[1]);
             
-            return  new int[] {row, column};
+            return  new Coordinates(row, column);
         }
 
         private int ValidateInput(string input)

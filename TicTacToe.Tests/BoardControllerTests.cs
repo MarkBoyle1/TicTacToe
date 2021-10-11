@@ -5,7 +5,7 @@ namespace TicTacToe.Tests
 {
     public class BoardControllerTests
     {
-        private Board _board = new Board();
+        private BoardController _board = new BoardController();
         
         [Fact]
         public void when_GenerateBoard_then_return_stringArrayOfArrays()
