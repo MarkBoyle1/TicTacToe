@@ -4,7 +4,7 @@ namespace TicTacToe.Tests
 {
     public class ResultTests
     {
-        private Result _result = new Result();
+        private Result _result = new Result(3);
         [Fact]
         public void given_rowIsComplete_when_CheckResults_then_return_true()
         {
@@ -39,6 +39,19 @@ namespace TicTacToe.Tests
                 new string[] {"o", ".", "o"},
                 new string[] {".", ".", "."},
                 new string[] {".", ".", "."},
+            };
+
+            Assert.False(_result.CheckResults(board));
+        }
+        
+        [Fact]
+        public void given_columnIsNotComplete_when_CheckResults_then_return_false()
+        {
+            string[][] board = new string[][]
+            {
+                new string[] {"o", ".", "."},
+                new string[] {".", ".", "."},
+                new string[] {"o", ".", "."},
             };
 
             Assert.False(_result.CheckResults(board));

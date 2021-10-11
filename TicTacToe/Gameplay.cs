@@ -6,7 +6,7 @@ namespace TicTacToe
 {
     public class Gameplay
     {
-        private string[][] _board;
+        private Board _board;
         private IUserInput _input;
         private IOutput _output;
         private BoardController boardController;
@@ -20,7 +20,7 @@ namespace TicTacToe
             _input = input;
             _output = output;
             boardController = new BoardController();
-            _result = new Result();
+            _result = new Result(sizeOfGrid);
         }
         
         public string PlayOneGame(List<Player> playerList)
@@ -29,31 +29,33 @@ namespace TicTacToe
             _currentPlayer = _playerList[0];
             
             _board = boardController.GenerateBoard();
+            _output.DisplayBoard(_board);
+
             _board = MakeAMove(_currentPlayer);
             
-            while(!_result.CheckResults(_board))
+            while(!_result.CheckResults(_board._board))
             {
                 _currentPlayer = SwapPlayers(_currentPlayer);
                 _board = MakeAMove(_currentPlayer);
             }
 
-            if (_result.CheckForDraw(_board))
+            if (_result.CheckForDraw(_board._board))
             {
                 return "Draw";
             }
 
             return _currentPlayer.Name;
         }
-        public string[][] MakeAMove(Player player)
+        public Board MakeAMove(Player player)
         {
-            _output.DisplayMessage("Please select coordinates: ");
-            string input = _input.GetCoordinates();
+            string input = CollectUserInput();
             Coordinates coordinates = ProcessCoordinates(input);
-
-            if (!CheckMoveIsValid(coordinates, _board))
+            
+            while (!CheckMoveIsValid(coordinates, _board))
             {
                 _output.DisplayMessage("Move is not valid. Please try again.");
-                MakeAMove(_currentPlayer);
+                input = CollectUserInput();
+                coordinates = ProcessCoordinates(input);
             }
             
             _board = boardController.UpdateBoard(_currentPlayer.Marker, coordinates.Row, coordinates.Column, _board);
@@ -61,47 +63,68 @@ namespace TicTacToe
             
             return _board;
         }
+        
+        private string CollectUserInput()
+        {
+            string input = "";
+            bool isValid = false;
 
-        private bool CheckMoveIsValid(Coordinates input, string[][] board)
+            while (!isValid)
+            {
+                try
+                {
+                    _output.DisplayMessage("Please select coordinates: ");
+
+                    input = _input.GetCoordinates();
+                    string[] stringArray = input.Split(',');
+
+                    bool rowIsNumber = ValidateNumber(stringArray[0]);
+                    bool columnIsNumber = ValidateNumber(stringArray[1]);
+
+                    if (rowIsNumber && columnIsNumber)
+                    {
+                        isValid = true;
+                    }
+                    else
+                    {
+                        _output.DisplayMessage("Invalid input.");
+                    }
+                }
+                catch
+                {
+                    _output.DisplayMessage("Invalid input.");
+                }
+            }
+
+            return input;
+        }
+        
+        private bool ValidateNumber(string input)
+        {
+            int number;
+            return (int.TryParse(input, out number));
+        }
+
+        private bool CheckMoveIsValid(Coordinates input, Board board)
         {
             if (input.Row >= sizeOfGrid || input.Column >= sizeOfGrid)
             {
                 return false;
             }
             
-            return board[input.Row][input.Column] == ".";
+            return board._board[input.Row][input.Column] == ".";
         }
 
         private Coordinates ProcessCoordinates(string input)
         {
             string[] stringArray = input.Split(',');
-
-            int row = ValidateInput(stringArray[0]);
-            int column = ValidateInput(stringArray[1]);
+            
+            int row = Convert.ToInt32(stringArray[0]) - 1;
+            int column = Convert.ToInt32(stringArray[1]) - 1;
             
             return  new Coordinates(row, column);
         }
-
-        private int ValidateInput(string input)
-        {
-            int number;
-            if (!int.TryParse(input, out number))
-            {
-                _output.DisplayMessage("Invalid Input.");
-                MakeAMove(_currentPlayer);
-            }
-
-            number = Convert.ToInt32(input) - 1;
-
-            if (number < 0 || number > 2)
-            {
-                _output.DisplayMessage("Invalid Input.");
-                MakeAMove(_currentPlayer);
-            }
-
-            return number;
-        }
-
+        
         private Player SwapPlayers(Player currentPlayer)
         {
             return currentPlayer == _playerList[0] ? _playerList[1] : _playerList[0];

@@ -4,6 +4,6 @@ namespace TicTacToe
     {
         public void DisplayMessage(string message);
 
-        public void DisplayBoard(string[][] board);
+        public void DisplayBoard(Board board);
     }
 }

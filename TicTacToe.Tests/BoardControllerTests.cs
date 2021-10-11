@@ -17,9 +17,9 @@ namespace TicTacToe.Tests
                 new string[] {".", ".", "."},
             };
 
-            string[][] board = _board.GenerateBoard();
+            Board board = _board.GenerateBoard();
             
-            Assert.Equal(expectedBoard, board);
+            Assert.Equal(expectedBoard, board._board);
         }
         
         [Fact]
@@ -32,11 +32,11 @@ namespace TicTacToe.Tests
                 new string[] {".", ".", "."},
             };
             
-            string[][] board = _board.GenerateBoard();
+            Board board = _board.GenerateBoard();
 
             board = _board.UpdateBoard("x", 0, 0, board);
             
-            Assert.Equal(expectedBoard, board);
+            Assert.Equal(expectedBoard, board._board);
         }
     }
 }

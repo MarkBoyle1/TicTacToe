@@ -9,9 +9,9 @@ namespace TicTacToe
             Console.WriteLine(message);
         }
 
-        public void DisplayBoard(string[][] board)
+        public void DisplayBoard(Board board)
         {
-            foreach (var row in board)
+            foreach (var row in board._board)
             {
                 Console.WriteLine(String.Join(',', row).Replace(',', ' '));
             }

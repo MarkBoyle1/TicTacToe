@@ -5,7 +5,7 @@ namespace TicTacToe
 {
     public class BoardController
     {
-        public string[][] GenerateBoard()
+        public Board GenerateBoard()
         {
             string[][] board = new string[3][];
             board = board.Select
@@ -14,12 +14,12 @@ namespace TicTacToe
                 )
                 .ToArray();
 
-            return board;
+            return new Board(board);
         }
         
-        public string[][] UpdateBoard(string marker, int row, int column, string[][] board)
+        public Board UpdateBoard(string marker, int row, int column, Board board)
         {
-            board[row][column] = marker;
+            board._board[row][column] = marker;
             
             return board;
         }

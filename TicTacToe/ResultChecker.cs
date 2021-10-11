@@ -5,18 +5,18 @@ namespace TicTacToe
 {
     public class Result
     {
+        private int _sizeOfGrid;
+
+        public Result(int sizeOfGrid)
+        {
+            _sizeOfGrid = sizeOfGrid;
+        }
         public bool CheckResults(string[][] board)
         {
             if (CheckRow(board))
                 return true;
 
-            if (CheckColumn(board, 0))
-                return true;
-            
-            if (CheckColumn(board, 1))
-                return true;
-            
-            if (CheckColumn(board, 2))
+            if (CheckColumn(board))
                 return true;
 
             if (CheckTopLeftToBottomRight(board))
@@ -33,59 +33,71 @@ namespace TicTacToe
 
         private bool CheckRow(string[][] board)
         {
-            if (board[0].Distinct().Count() == 1 && !board[0].Contains("."))
-                return true;
-            if (board[1].Distinct().Count() == 1 && !board[1].Contains("."))
-                return true;
-            if (board[2].Distinct().Count() == 1 && !board[2].Contains("."))
-                return true;
+            for (int i = 0; i < _sizeOfGrid; i++)
+            {
+                if (board[i].Distinct().Count() == 1 && !board[i].Contains("."))
+                {
+                    return true;
+                }
+            }
+           
             return false;
         }
 
-        private bool CheckColumn(string[][] board, int column)
+        private bool CheckColumn(string[][] board)
         {
-            List<string> columnCheck = new List<string>()
+            List<string> columnCheck = new List<string>();
+
+            for(int column = 0; column < _sizeOfGrid; column++)
             {
-                board[0][column],
-                board[1][column],
-                board[2][column]
-            };
-            
-            return columnCheck.Distinct().Count() == 1 && !columnCheck.Contains(".");
+                for(int row = 0; row < _sizeOfGrid; row++)
+                {
+                    columnCheck.Add(board[row][column]);
+                }
+
+                if (columnCheck.Distinct().Count() == 1 && !columnCheck.Contains("."))
+                {
+                    return true;
+                }
+                columnCheck.Clear();
+            }
+
+            return false;
         }
 
         private bool CheckTopLeftToBottomRight(string[][] board)
         {
-            List<string> diagonalSlopeRight= new List<string>()
+            List<string> diagonalSlopeRight = new List<string>();
+
+            for(int i = 0; i < _sizeOfGrid; i++)
             {
-                board[0][0],
-                board[1][1],
-                board[2][2]
-            };
+                diagonalSlopeRight.Add(board[i][i]);
+            }
+            
             return diagonalSlopeRight.Distinct().Count() == 1 && !diagonalSlopeRight.Contains(".");
             
         }
         
         private bool CheckTopRightToBottomLeft(string[][] board)
         {
-            List<string> diagonalSlopeLeft= new List<string>()
+            List<string> diagonalSlopeLeft = new List<string>();
+
+            for(int i = 0, column = _sizeOfGrid - 1; i < _sizeOfGrid; i++, column--)
             {
-                board[0][2],
-                board[1][1],
-                board[2][0]
-            };
+                diagonalSlopeLeft.Add(board[i][column]);
+            }
             
             return diagonalSlopeLeft.Distinct().Count() == 1 && !diagonalSlopeLeft.Contains(".");
         }
         
         public bool CheckForDraw(string[][] board)
         {
-            List<bool> drawCheck= new List<bool>()
+            List<bool> drawCheck = new List<bool>();
+
+            for(int i = 0; i < _sizeOfGrid; i++)
             {
-                board[0].Contains("."),
-                board[1].Contains("."),
-                board[2].Contains(".")
-            };
+                drawCheck.Add(board[i].Contains("."));
+            }
             
             return !drawCheck.Contains(true);
         }
