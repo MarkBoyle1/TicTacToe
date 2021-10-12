@@ -1,26 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using TicTacToe.Exceptions;
 
 namespace TicTacToe
 {
     public class Gameplay
     {
-        private Board _board;
         private IUserInput _input;
         private IOutput _output;
-        private BoardController boardController;
+        private Board board;
         private List<Player> _playerList;
         private Player _currentPlayer;
-        public Result _result;
-        private int sizeOfGrid = 3;
+        public ResultChecker _resultChecker;
+        private int sizeOfBoard = 3;
 
         public Gameplay(IUserInput input, IOutput output)
         {
             _input = input;
             _output = output;
-            boardController = new BoardController();
-            _result = new Result(sizeOfGrid);
+            board = new Board(sizeOfBoard);
+            _resultChecker = new ResultChecker(sizeOfBoard);
         }
         
         public string PlayOneGame(List<Player> playerList)
@@ -28,18 +28,18 @@ namespace TicTacToe
             _playerList = playerList;
             _currentPlayer = _playerList[0];
             
-            _board = boardController.GenerateBoard();
-            _output.DisplayBoard(_board);
+            board = board.GenerateBoard(board);
+            _output.DisplayBoard(board, sizeOfBoard);
 
-            _board = MakeAMove(_currentPlayer);
+            board = MakeAMove(_currentPlayer);
             
-            while(!_result.CheckResults(_board._board))
+            while(!_resultChecker.CheckResults(board))
             {
                 _currentPlayer = SwapPlayers(_currentPlayer);
-                _board = MakeAMove(_currentPlayer);
+                board = MakeAMove(_currentPlayer);
             }
 
-            if (_result.CheckForDraw(_board._board))
+            if (_resultChecker.CheckForDraw(board))
             {
                 return "Draw";
             }
@@ -51,17 +51,17 @@ namespace TicTacToe
             string input = CollectUserInput();
             Coordinates coordinates = ProcessCoordinates(input);
             
-            while (!CheckMoveIsValid(coordinates, _board))
+            while (!board.CheckMoveIsValid(coordinates))
             {
                 _output.DisplayMessage("Move is not valid. Please try again.");
                 input = CollectUserInput();
                 coordinates = ProcessCoordinates(input);
             }
             
-            _board = boardController.UpdateBoard(_currentPlayer.Marker, coordinates.Row, coordinates.Column, _board);
-            _output.DisplayBoard(_board);
+            board = board.UpdateBoard(_currentPlayer.Marker, coordinates.Row, coordinates.Column, board);
+            _output.DisplayBoard(board, sizeOfBoard);
             
-            return _board;
+            return board;
         }
         
         private string CollectUserInput()
@@ -73,10 +73,11 @@ namespace TicTacToe
             {
                 try
                 {
-                    _output.DisplayMessage("Please select coordinates: ");
+                    _output.DisplayMessage($"{_currentPlayer.Name} please enter row,column to place your {_currentPlayer.Marker}: ");
 
                     input = _input.GetCoordinates();
-                    string[] stringArray = input.Split(',');
+
+                    string[] stringArray = ValidateInput(input);
 
                     bool rowIsNumber = ValidateNumber(stringArray[0]);
                     bool columnIsNumber = ValidateNumber(stringArray[1]);
@@ -85,34 +86,41 @@ namespace TicTacToe
                     {
                         isValid = true;
                     }
-                    else
-                    {
-                        _output.DisplayMessage("Invalid input.");
-                    }
                 }
-                catch
+                catch (InvalidInputException error)
                 {
-                    _output.DisplayMessage("Invalid input.");
+                    _output.DisplayMessage(error.Message);
+                }
+                catch (NotANumberException error)
+                {
+                    _output.DisplayMessage(error.Message);
                 }
             }
 
             return input;
         }
         
+        private string[] ValidateInput(string input)
+        {
+            string[] stringArray = input.Split(',');
+
+            if (stringArray.Length != 2)
+            {
+                throw new InvalidInputException(input);
+            }
+
+            return stringArray;
+        }
+        
         private bool ValidateNumber(string input)
         {
             int number;
-            return (int.TryParse(input, out number));
-        }
-
-        private bool CheckMoveIsValid(Coordinates input, Board board)
-        {
-            if (input.Row >= sizeOfGrid || input.Column >= sizeOfGrid)
+            if (!int.TryParse(input, out number))
             {
-                return false;
+                throw new NotANumberException(input);
             }
-            
-            return board._board[input.Row][input.Column] == ".";
+
+            return true;
         }
 
         private Coordinates ProcessCoordinates(string input)

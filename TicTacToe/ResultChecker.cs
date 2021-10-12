@@ -3,15 +3,15 @@ using System.Linq;
 
 namespace TicTacToe
 {
-    public class Result
+    public class ResultChecker
     {
         private int _sizeOfGrid;
 
-        public Result(int sizeOfGrid)
+        public ResultChecker(int sizeOfGrid)
         {
             _sizeOfGrid = sizeOfGrid;
         }
-        public bool CheckResults(string[][] board)
+        public bool CheckResults(Board board)
         {
             if (CheckRow(board))
                 return true;
@@ -31,11 +31,11 @@ namespace TicTacToe
             return false;
         }
 
-        private bool CheckRow(string[][] board)
+        private bool CheckRow(Board board)
         {
             for (int i = 0; i < _sizeOfGrid; i++)
             {
-                if (board[i].Distinct().Count() == 1 && !board[i].Contains("."))
+                if (board.GetRow(i).Distinct().Count() == 1 && !board.GetRow(i).Contains("."))
                 {
                     return true;
                 }
@@ -44,59 +44,51 @@ namespace TicTacToe
             return false;
         }
 
-        private bool CheckColumn(string[][] board)
+        private bool CheckColumn(Board board)
         {
-            List<string> columnCheck = new List<string>();
-
             for(int column = 0; column < _sizeOfGrid; column++)
             {
-                for(int row = 0; row < _sizeOfGrid; row++)
-                {
-                    columnCheck.Add(board[row][column]);
-                }
-
-                if (columnCheck.Distinct().Count() == 1 && !columnCheck.Contains("."))
+                if (board.GetColumn(column).Distinct().Count() == 1 && !board.GetColumn(column).Contains("."))
                 {
                     return true;
                 }
-                columnCheck.Clear();
             }
 
             return false;
         }
 
-        private bool CheckTopLeftToBottomRight(string[][] board)
+        private bool CheckTopLeftToBottomRight(Board board)
         {
             List<string> diagonalSlopeRight = new List<string>();
 
             for(int i = 0; i < _sizeOfGrid; i++)
             {
-                diagonalSlopeRight.Add(board[i][i]);
+                diagonalSlopeRight.Add(board.GetPoint(i,i));
             }
             
             return diagonalSlopeRight.Distinct().Count() == 1 && !diagonalSlopeRight.Contains(".");
             
         }
         
-        private bool CheckTopRightToBottomLeft(string[][] board)
+        private bool CheckTopRightToBottomLeft(Board board)
         {
             List<string> diagonalSlopeLeft = new List<string>();
 
             for(int i = 0, column = _sizeOfGrid - 1; i < _sizeOfGrid; i++, column--)
             {
-                diagonalSlopeLeft.Add(board[i][column]);
+                diagonalSlopeLeft.Add(board.GetPoint(i, column));
             }
             
             return diagonalSlopeLeft.Distinct().Count() == 1 && !diagonalSlopeLeft.Contains(".");
         }
         
-        public bool CheckForDraw(string[][] board)
+        public bool CheckForDraw(Board board)
         {
             List<bool> drawCheck = new List<bool>();
 
             for(int i = 0; i < _sizeOfGrid; i++)
             {
-                drawCheck.Add(board[i].Contains("."));
+                drawCheck.Add(board.GetRow(i).Contains("."));
             }
             
             return !drawCheck.Contains(true);

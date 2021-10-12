@@ -9,11 +9,11 @@ namespace TicTacToe
             Console.WriteLine(message);
         }
 
-        public void DisplayBoard(Board board)
+        public void DisplayBoard(Board board, int sizeOfBoard)
         {
-            foreach (var row in board._board)
+            for(int row = 0; row < sizeOfBoard; row++)
             {
-                Console.WriteLine(String.Join(',', row).Replace(',', ' '));
+                Console.WriteLine(String.Join(',', board.GetRow(row)).Replace(',', ' '));
             }
         }
     }
