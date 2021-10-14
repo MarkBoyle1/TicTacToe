@@ -18,15 +18,15 @@ namespace TicTacToe
         {
             _output.DisplayMessage("Welcome to TicTacToe!");
             _playerList = AddPlayers();
-            string winner = _gameplay.PlayOneGame(_playerList);
+            string result = _gameplay.PlayOneGame(_playerList);
 
-            if (winner == "Draw")
+            if (result == "Draw")
             {
                 _output.DisplayMessage("Draw");
             }
             else
             {
-                _output.DisplayMessage("The winner is " + winner);
+                _output.DisplayMessage("The winner is " + result);
             }
         }
 

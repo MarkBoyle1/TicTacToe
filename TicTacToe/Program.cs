@@ -7,8 +7,8 @@ namespace TicTacToe
     {
         static void Main(string[] args)
         {
-            GameSetUp gameplay = new GameSetUp(new UserInput(), new Output());
-            gameplay.RunProgram();
+            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
+            gameSetUp.RunProgram();
         }
     }
 }

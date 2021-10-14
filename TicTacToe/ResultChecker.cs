@@ -33,9 +33,9 @@ namespace TicTacToe
 
         private bool CheckRow(Board board)
         {
-            for (int i = 0; i < _sizeOfGrid; i++)
+            for (int row = 0; row < _sizeOfGrid; row++)
             {
-                if (board.GetRow(i).Distinct().Count() == 1 && !board.GetRow(i).Contains("."))
+                if (board.GetRow(row).Distinct().Count() == 1 && !board.GetRow(row).Contains("."))
                 {
                     return true;
                 }
@@ -74,9 +74,9 @@ namespace TicTacToe
         {
             List<string> diagonalSlopeLeft = new List<string>();
 
-            for(int i = 0, column = _sizeOfGrid - 1; i < _sizeOfGrid; i++, column--)
+            for(int row = 0, column = _sizeOfGrid - 1; row < _sizeOfGrid; row++, column--)
             {
-                diagonalSlopeLeft.Add(board.GetPoint(i, column));
+                diagonalSlopeLeft.Add(board.GetPoint(row, column));
             }
             
             return diagonalSlopeLeft.Distinct().Count() == 1 && !diagonalSlopeLeft.Contains(".");
@@ -86,9 +86,9 @@ namespace TicTacToe
         {
             List<bool> drawCheck = new List<bool>();
 
-            for(int i = 0; i < _sizeOfGrid; i++)
+            for(int row = 0; row < _sizeOfGrid; row++)
             {
-                drawCheck.Add(board.GetRow(i).Contains("."));
+                drawCheck.Add(board.GetRow(row).Contains("."));
             }
             
             return !drawCheck.Contains(true);

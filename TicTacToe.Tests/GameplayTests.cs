@@ -52,10 +52,10 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_listOfMovesCreatesDraw_when_PlayOneGame_then_return_Draw()
         {
-            List<string> _listOfMovesDraw = new List<string>() {"1,1", "1,2", "2,1", "2,3", "3,3", "2,2", "1,3", "3,1", "3,2"};
-            Gameplay _gameplayDraw = new Gameplay(new TestUserInput(_listOfMovesDraw), new Output());
+            List<string> listOfMovesDraw = new List<string>() {"1,1", "1,2", "2,1", "2,3", "3,3", "2,2", "1,3", "3,1", "3,2"};
+            Gameplay gameplayDraw = new Gameplay(new TestUserInput(listOfMovesDraw), new Output());
             
-            Assert.Equal("Draw", _gameplayDraw.PlayOneGame(_playerList));
+            Assert.Equal("Draw", gameplayDraw.PlayOneGame(_playerList));
         }
     }
 }

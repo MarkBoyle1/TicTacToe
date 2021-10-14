@@ -5,35 +5,34 @@ namespace TicTacToe
     public class Board
     {
         private string[][] _board;
-        private ResultChecker _resultChecker;
         private int _sizeOfBoard;
 
         public Board(int sizeOfBoard)
         {
-            _resultChecker = new ResultChecker(3);
             _sizeOfBoard = sizeOfBoard;
+            _board = GenerateBoard(sizeOfBoard);
         }
         
-        public bool CheckMoveIsValid(Coordinates input)
+        public string[][] GenerateBoard(int sizeOfBoard)
         {
-            if (input.Row >= _sizeOfBoard || input.Column >= _sizeOfBoard || input.Row < 0 || input.Column < 0)
-            {
-                return false;
-            }
-            
-            return _board[input.Row][input.Column] == ".";
-        }
-        
-        public Board GenerateBoard(Board board)
-        {
-            board._board = new string[3][];
-            board._board = board._board.Select
+            string[][] board = new string[sizeOfBoard][];
+            board = board.Select
                 (
-                    x => new string[3].Select(x => ".").ToArray()
+                    x => new string[sizeOfBoard].Select(x => ".").ToArray()
                 )
                 .ToArray();
             
             return board;
+        }
+        
+        public bool CheckMoveIsValid(Coordinates input)
+        {
+            if (input.GetRow() >= _sizeOfBoard || input.GetColumn() >= _sizeOfBoard || input.GetRow() < 0 || input.GetColumn() < 0)
+            {
+                return false;
+            }
+            
+            return _board[input.GetRow()][input.GetColumn()] == ".";
         }
         
         public Board UpdateBoard(string marker, int row, int column, Board board)

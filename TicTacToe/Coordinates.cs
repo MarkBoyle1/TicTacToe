@@ -2,13 +2,23 @@ namespace TicTacToe
 {
     public class Coordinates
     {
-        public int Row { get; }
-        public int Column { get; }
+        private int Row;
+        private int Column;
 
         public Coordinates(int row, int column)
         {
             Row = row;
             Column = column;
+        }
+
+        public int GetRow()
+        {
+            return Row;
+        }
+        
+        public int GetColumn()
+        {
+            return Column;
         }
     }
 }

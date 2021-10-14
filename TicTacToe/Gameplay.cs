@@ -12,7 +12,7 @@ namespace TicTacToe
         private Board board;
         private List<Player> _playerList;
         private Player _currentPlayer;
-        public ResultChecker _resultChecker;
+        private ResultChecker _resultChecker;
         private int sizeOfBoard = 3;
 
         public Gameplay(IUserInput input, IOutput output)
@@ -28,15 +28,14 @@ namespace TicTacToe
             _playerList = playerList;
             _currentPlayer = _playerList[0];
             
-            board = board.GenerateBoard(board);
             _output.DisplayBoard(board, sizeOfBoard);
 
-            board = MakeAMove(_currentPlayer);
+            board = MakeAMove();
             
             while(!_resultChecker.CheckResults(board))
             {
                 _currentPlayer = SwapPlayers(_currentPlayer);
-                board = MakeAMove(_currentPlayer);
+                board = MakeAMove();
             }
 
             if (_resultChecker.CheckForDraw(board))
@@ -46,7 +45,7 @@ namespace TicTacToe
 
             return _currentPlayer.Name;
         }
-        public Board MakeAMove(Player player)
+        public Board MakeAMove()
         {
             string input = CollectUserInput();
             Coordinates coordinates = ProcessCoordinates(input);
@@ -58,7 +57,7 @@ namespace TicTacToe
                 coordinates = ProcessCoordinates(input);
             }
             
-            board = board.UpdateBoard(_currentPlayer.Marker, coordinates.Row, coordinates.Column, board);
+            board = board.UpdateBoard(_currentPlayer.Marker, coordinates.GetRow(), coordinates.GetColumn(), board);
             _output.DisplayBoard(board, sizeOfBoard);
             
             return board;
