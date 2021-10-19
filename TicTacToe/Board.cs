@@ -7,41 +7,12 @@ namespace TicTacToe
         private string[][] _board;
         private int _sizeOfBoard;
 
-        public Board(int sizeOfBoard)
+        public Board(string[][] board)
         {
-            _sizeOfBoard = sizeOfBoard;
-            _board = GenerateBoard(sizeOfBoard);
+            _sizeOfBoard = board[0].Length;
+            _board = board;
         }
         
-        public string[][] GenerateBoard(int sizeOfBoard)
-        {
-            string[][] board = new string[sizeOfBoard][];
-            board = board.Select
-                (
-                    x => new string[sizeOfBoard].Select(x => ".").ToArray()
-                )
-                .ToArray();
-            
-            return board;
-        }
-        
-        public bool CheckMoveIsValid(Coordinates input)
-        {
-            if (input.GetRow() >= _sizeOfBoard || input.GetColumn() >= _sizeOfBoard || input.GetRow() < 0 || input.GetColumn() < 0)
-            {
-                return false;
-            }
-            
-            return _board[input.GetRow()][input.GetColumn()] == ".";
-        }
-        
-        public Board UpdateBoard(string marker, int row, int column, Board board)
-        {
-            board._board[row][column] = marker;
-
-            return board;
-        }
-
         public string[] GetRow(int row)
         {
             return _board[row];

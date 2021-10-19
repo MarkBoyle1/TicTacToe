@@ -9,58 +9,115 @@ namespace TicTacToe
     {
         private IUserInput _input;
         private IOutput _output;
-        private Board board;
+        private Board _board;
         private List<Player> _playerList;
         private Player _currentPlayer;
         private ResultChecker _resultChecker;
-        private int sizeOfBoard = 3;
+        private BoardFactory _boardFactory;
+        private GameState _gameState;
+        private Validations _validations;
+        private int _sizeOfBoard = 3;
 
-        public Gameplay(IUserInput input, IOutput output)
+        public Gameplay(IUserInput input, IOutput output, List<Player> playerList)
         {
             _input = input;
             _output = output;
-            board = new Board(sizeOfBoard);
-            _resultChecker = new ResultChecker(sizeOfBoard);
-        }
-        
-        public string PlayOneGame(List<Player> playerList)
-        {
             _playerList = playerList;
             _currentPlayer = _playerList[0];
+            _boardFactory = new BoardFactory();
+            _board = _boardFactory.GenerateInitialBoard(_sizeOfBoard);
+            _resultChecker = new ResultChecker(_sizeOfBoard);
+            _validations = new Validations();
+            _gameState = new GameState(_board, _currentPlayer, _playerList, "In Play");
+        }
+        
+        public GameState PlayOneGame()
+        {
+            _output.DisplayBoard(_board, _sizeOfBoard);
             
-            _output.DisplayBoard(board, sizeOfBoard);
+            _gameState = PlayTurn();
 
-            board = MakeAMove();
-            
-            while(!_resultChecker.CheckResults(board))
+            while(!_resultChecker.CheckResults(_board))
             {
                 _currentPlayer = SwapPlayers(_currentPlayer);
-                board = MakeAMove();
+                _gameState = PlayTurn();
             }
 
-            if (_resultChecker.CheckForDraw(board))
+            if (_resultChecker.CheckForDraw(_board))
             {
-                return "Draw";
+                return new GameState(_board, _currentPlayer, _playerList, "Draw");
             }
 
-            return _currentPlayer.Name;
+            return new GameState(_board, _currentPlayer, _playerList, $"{_currentPlayer.Name} wins!");
         }
-        public Board MakeAMove()
+
+        private GameState PlayTurn()
+        {
+            Coordinates coordinates = GetPlayerMove();
+            _board = MakeAMove(coordinates);
+
+            _output.DisplayBoard(_board, _sizeOfBoard);
+
+            return new GameState(_board, _currentPlayer, _playerList, "In Play");
+        }
+        
+        public GameState RecursionPlayOneGame()
+        {
+            _output.DisplayBoard(_board, _sizeOfBoard);
+            
+            return RecursionPlayTurn(_gameState);
+        }
+        
+        private GameState RecursionPlayTurn(GameState gameState)
+        {
+            if (gameState.Status != "In Play")
+            {
+                return gameState;
+            }
+
+            _currentPlayer = gameState.CurrentPlayer;
+            
+            Coordinates coordinates = GetPlayerMove();
+            _board = MakeAMove(coordinates);
+            
+            _output.DisplayBoard(_board, _sizeOfBoard);
+
+            GameState newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, "In Play");
+            
+            if (_resultChecker.CheckForDraw(_board))
+            {
+                newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, "Draw");
+            }
+            else if(_resultChecker.CheckResults(_board))
+            {
+                newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, $"{_currentPlayer.Name} wins!");
+            }
+
+            return RecursionPlayTurn(newGameState);
+        }
+        
+        
+        
+        public Board MakeAMove(Coordinates coordinates)
+        {
+            Board updatedBoard = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
+
+            return updatedBoard;
+        }
+
+        private Coordinates GetPlayerMove()
         {
             string input = CollectUserInput();
             Coordinates coordinates = ProcessCoordinates(input);
             
-            while (!board.CheckMoveIsValid(coordinates))
+            while (!_validations.CheckMoveIsValid(coordinates, _board))
             {
                 _output.DisplayMessage("Move is not valid. Please try again.");
                 input = CollectUserInput();
                 coordinates = ProcessCoordinates(input);
             }
-            
-            board = board.UpdateBoard(_currentPlayer.Marker, coordinates.GetRow(), coordinates.GetColumn(), board);
-            _output.DisplayBoard(board, sizeOfBoard);
-            
-            return board;
+
+            return coordinates;
         }
         
         private string CollectUserInput()
@@ -76,10 +133,10 @@ namespace TicTacToe
 
                     input = _input.GetCoordinates();
 
-                    string[] stringArray = ValidateInput(input);
+                    string[] stringArray = _validations.ValidateInput(input);
 
-                    bool rowIsNumber = ValidateNumber(stringArray[0]);
-                    bool columnIsNumber = ValidateNumber(stringArray[1]);
+                    bool rowIsNumber = _validations.ValidateNumber(stringArray[0]);
+                    bool columnIsNumber = _validations.ValidateNumber(stringArray[1]);
 
                     if (rowIsNumber && columnIsNumber)
                     {
@@ -99,29 +156,6 @@ namespace TicTacToe
             return input;
         }
         
-        private string[] ValidateInput(string input)
-        {
-            string[] stringArray = input.Split(',');
-
-            if (stringArray.Length != 2)
-            {
-                throw new InvalidInputException(input);
-            }
-
-            return stringArray;
-        }
-        
-        private bool ValidateNumber(string input)
-        {
-            int number;
-            if (!int.TryParse(input, out number))
-            {
-                throw new NotANumberException(input);
-            }
-
-            return true;
-        }
-
         private Coordinates ProcessCoordinates(string input)
         {
             string[] stringArray = input.Split(',');
