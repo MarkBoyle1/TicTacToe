@@ -60,44 +60,7 @@ namespace TicTacToe
 
             return new GameState(_board, _currentPlayer, _playerList, "In Play");
         }
-        
-        public GameState RecursionPlayOneGame()
-        {
-            _output.DisplayBoard(_board, _sizeOfBoard);
-            
-            return RecursionPlayTurn(_gameState);
-        }
-        
-        private GameState RecursionPlayTurn(GameState gameState)
-        {
-            if (gameState.Status != "In Play")
-            {
-                return gameState;
-            }
 
-            _currentPlayer = gameState.CurrentPlayer;
-            
-            Coordinates coordinates = GetPlayerMove();
-            _board = MakeAMove(coordinates);
-            
-            _output.DisplayBoard(_board, _sizeOfBoard);
-
-            GameState newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, "In Play");
-            
-            if (_resultChecker.CheckForDraw(_board))
-            {
-                newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, "Draw");
-            }
-            else if(_resultChecker.CheckResults(_board))
-            {
-                newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, $"{_currentPlayer.Name} wins!");
-            }
-
-            return RecursionPlayTurn(newGameState);
-        }
-        
-        
-        
         public Board MakeAMove(Coordinates coordinates)
         {
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);

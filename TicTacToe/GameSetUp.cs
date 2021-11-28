@@ -23,19 +23,27 @@ namespace TicTacToe
             _gameplay = new Gameplay(_userInput, _output, _playerList);
             
             GameState result = _gameplay.PlayOneGame();
-            // GameState result = _gameplay.RecursionPlayOneGame();
             _output.DisplayMessage(result.Status);
         }
 
         public List<Player> AddPlayers()
         {
-            List<Player> playerList = new List<Player>()
-            {
-                new Player("Player1", "x"),
-                new Player("Player2", "o")
-            };
+            List<Player> playerList = new List<Player>();
 
+            for (int i = 1; i <= 2; i++)
+            {
+                string playerName = "Player" + i;
+                string marker = GetPlayerMarker(playerName);
+
+                playerList.Add(new Player(playerName, marker));
+            }
             return playerList;
+        }
+
+        public string GetPlayerMarker(string playerName)
+        {
+            _output.DisplayMessage($"Please enter the marker for {playerName}:");
+            return _userInput.GetUserInput();
         }
     }
 }

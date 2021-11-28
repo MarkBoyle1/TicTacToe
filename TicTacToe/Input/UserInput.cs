@@ -8,5 +8,10 @@ namespace TicTacToe
         {
             return Console.ReadLine();
         }
+
+        public string GetUserInput()
+        {
+            return Console.ReadLine();
+        }
     }
 }
