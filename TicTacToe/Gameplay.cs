@@ -18,12 +18,12 @@ namespace TicTacToe
         private Validations _validations;
         private int _sizeOfBoard = 3;
 
-        public Gameplay(IUserInput input, IOutput output, List<Player> playerList)
+        public Gameplay(IUserInput input, IOutput output, List<Player> playerList, Player currentPlayer)
         {
             _input = input;
             _output = output;
             _playerList = playerList;
-            _currentPlayer = _playerList[0];
+            _currentPlayer = currentPlayer;
             _boardFactory = new BoardFactory();
             _board = _boardFactory.GenerateInitialBoard(_sizeOfBoard);
             _resultChecker = new ResultChecker(_sizeOfBoard);

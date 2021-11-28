@@ -18,15 +18,22 @@ namespace TicTacToe
         public void RunProgram()
         {
             _output.DisplayMessage("Welcome to TicTacToe!");
-            _playerList = AddPlayers();
-            
-            _gameplay = new Gameplay(_userInput, _output, _playerList);
+            _playerList = CreatePlayerList();
+            Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
+
+            _gameplay = new Gameplay(_userInput, _output, _playerList, currentPlayer);
             
             GameState result = _gameplay.PlayOneGame();
             _output.DisplayMessage(result.Status);
         }
 
-        public List<Player> AddPlayers()
+        public void SetUpGame()
+        {
+            _playerList = CreatePlayerList();
+            Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
+        }
+
+        public List<Player> CreatePlayerList()
         {
             List<Player> playerList = new List<Player>();
 
@@ -44,6 +51,14 @@ namespace TicTacToe
         {
             _output.DisplayMessage($"Please enter the marker for {playerName}:");
             return _userInput.GetUserInput();
+        }
+
+        public Player ChoosePlayerToGoFirst(List<Player> playerList)
+        {
+            _output.DisplayMessage("Which player will go first (enter 1 or 2):");
+            string response = _userInput.GetUserInput();
+            int playerNumber = Convert.ToInt32(response);
+            return playerList[playerNumber - 1];
         }
     }
 }
