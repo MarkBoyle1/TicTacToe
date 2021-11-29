@@ -18,5 +18,13 @@ namespace TicTacToe.Tests
             
             Assert.Equal("Player1", currentPlayer.Name);
         }
+        
+        [Fact]
+        public void given_userInputEquals3_when_GetSizeOfBoard_then_return_3()
+        {
+            GameSetUp _gameSetUp = new GameSetUp(new TestUserInput("3"), new Output());
+
+            Assert.Equal(3, _gameSetUp.GetSizeOfBoard());
+        }
     }
 }

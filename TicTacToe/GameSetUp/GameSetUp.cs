@@ -3,34 +3,28 @@ using System.Collections.Generic;
 
 namespace TicTacToe
 {
-    public class GameSetUp
+    public class GameSetUp : IGameSetUp
     {
         private Gameplay _gameplay;
         private List<Player> _playerList;
         private IOutput _output;
         private IUserInput _userInput;
+        private BoardFactory _boardFactory = new BoardFactory();
 
         public GameSetUp(IUserInput userInput, IOutput output)
         {
             _userInput = userInput;
             _output = output;
         }
-        public void RunProgram()
-        {
-            _output.DisplayMessage("Welcome to TicTacToe!");
-            _playerList = CreatePlayerList();
-            Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
 
-            _gameplay = new Gameplay(_userInput, _output, _playerList, currentPlayer);
-            
-            GameState result = _gameplay.PlayOneGame();
-            _output.DisplayMessage(result.Status);
-        }
-
-        public void SetUpGame()
+        public GameState SetUpGame()
         {
             _playerList = CreatePlayerList();
             Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
+            int sizeOfBoard = GetSizeOfBoard();
+            Board board = _boardFactory.GenerateInitialBoard(sizeOfBoard);
+
+            return new GameState(board, currentPlayer, _playerList, "In Play");
         }
 
         public List<Player> CreatePlayerList()
@@ -59,6 +53,13 @@ namespace TicTacToe
             string response = _userInput.GetUserInput();
             int playerNumber = Convert.ToInt32(response);
             return playerList[playerNumber - 1];
+        }
+
+        public int GetSizeOfBoard()
+        {
+            _output.DisplayMessage("Please enter the size of the board:");
+            string response = _userInput.GetUserInput();
+            return Convert.ToInt32(response);
         }
     }
 }

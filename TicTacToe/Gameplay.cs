@@ -17,18 +17,33 @@ namespace TicTacToe
         private GameState _gameState;
         private Validations _validations;
         private int _sizeOfBoard = 3;
+        private IGameSetUp _gameSetUp;
 
-        public Gameplay(IUserInput input, IOutput output, List<Player> playerList, Player currentPlayer)
+        public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
             _input = input;
             _output = output;
-            _playerList = playerList;
-            _currentPlayer = currentPlayer;
+            _gameSetUp = gameSetUp;
             _boardFactory = new BoardFactory();
-            _board = _boardFactory.GenerateInitialBoard(_sizeOfBoard);
             _resultChecker = new ResultChecker(_sizeOfBoard);
             _validations = new Validations();
-            _gameState = new GameState(_board, _currentPlayer, _playerList, "In Play");
+        }
+        
+        public void RunProgram()
+        {
+            SetUpInitialGame();
+            GameState result = PlayOneGame();
+            _output.DisplayMessage(result.Status);
+        }
+
+        public void SetUpInitialGame()
+        {
+            _output.DisplayMessage("Welcome to TicTacToe!");
+            _gameState = _gameSetUp.SetUpGame();
+            
+            _playerList = _gameState._playerList;
+            _currentPlayer = _gameState.CurrentPlayer;
+            _board = _gameState._board;
         }
         
         public GameState PlayOneGame()

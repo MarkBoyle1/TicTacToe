@@ -9,6 +9,7 @@ namespace TicTacToe
         public TestUserInput(List<string> listOfMoves)
         {
             _listOfMoves = listOfMoves;
+            _testInput = "3";
         }
 
         public TestUserInput(string input)

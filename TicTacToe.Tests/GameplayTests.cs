@@ -9,6 +9,7 @@ namespace TicTacToe.Tests
         private Gameplay _gameplayOWins;
         private GameSetUp _gameSetUp;
         private List<Player> _playerList;
+        private IGameSetUp _defaultGameSetUp;
         public GameplayTests()
         {
             _listOfMovesOWins = new List<string>() {"1,1", "1,2", "2,1", "2,2", "1,3", "3,2"};
@@ -20,7 +21,8 @@ namespace TicTacToe.Tests
                 new Player("Player2", "o")
             };
             
-            _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output(), _playerList, _playerList[0]);
+            _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
+            _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output(), _defaultGameSetUp);
         }
         
         [Fact]
@@ -35,7 +37,8 @@ namespace TicTacToe.Tests
         public void given_listOfMovesXWins_when_PlayOneGame_then_return_Player1()
         {
             List<string> listOfMovesXWins = new List<string>() {"1,1", "1,2", "2,1", "1,3", "3,1"};
-            Gameplay gameplayXWins = new Gameplay(new TestUserInput(listOfMovesXWins), new Output(), _playerList, _playerList[0]);
+            Gameplay gameplayXWins = new Gameplay(new TestUserInput(listOfMovesXWins), new Output(), _defaultGameSetUp);
+            gameplayXWins.SetUpInitialGame();
             GameState gameState = gameplayXWins.PlayOneGame();
             Assert.Equal("Player1 wins!", gameState.Status);
         }
@@ -44,8 +47,8 @@ namespace TicTacToe.Tests
         public void given_listOfMovesOWins_when_PlayOneGame_then_return_Player2()
         {
             _listOfMovesOWins = new List<string>() {"1,1", "1,2", "2,1", "2,2", "1,3", "3,2"};
-            _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output(), _playerList, _playerList[0]);
-            
+            _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output(), _defaultGameSetUp);
+            _gameplayOWins.SetUpInitialGame();
             GameState gameState = _gameplayOWins.PlayOneGame();
             Assert.Equal("Player2 wins!", gameState.Status);
         }
@@ -54,8 +57,8 @@ namespace TicTacToe.Tests
         public void given_listOfMovesCreatesDraw_when_PlayOneGame_then_return_Draw()
         {
             List<string> listOfMovesDraw = new List<string>() {"1,1", "1,2", "2,1", "2,3", "3,3", "2,2", "1,3", "3,1", "3,2"};
-            Gameplay gameplayDraw = new Gameplay(new TestUserInput(listOfMovesDraw), new Output(), _playerList, _playerList[0]);
-            
+            Gameplay gameplayDraw = new Gameplay(new TestUserInput(listOfMovesDraw), new Output(), _defaultGameSetUp);
+            gameplayDraw.SetUpInitialGame();
             GameState gameState = gameplayDraw.PlayOneGame();
             Assert.Equal("Draw", gameState.Status);
         }
