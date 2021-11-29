@@ -17,7 +17,7 @@ namespace TicTacToe
 
         public GameState SetUpGame()
         {
-            return new GameState(_board, _currentPlayer, _playerList, "In Play");
+            return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
     }
 }

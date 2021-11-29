@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5,35 +6,29 @@ namespace TicTacToe
 {
     public class ResultChecker
     {
-        private int _sizeOfGrid;
-
-        public ResultChecker(int sizeOfGrid)
-        {
-            _sizeOfGrid = sizeOfGrid;
-        }
-        public bool CheckResults(Board board)
+        public GameStatus CheckResults(Board board)
         {
             if (CheckRow(board))
-                return true;
+                return GameStatus.Win;
 
             if (CheckColumn(board))
-                return true;
+                return GameStatus.Win;
 
             if (CheckTopLeftToBottomRight(board))
-                return true;
+                return GameStatus.Win;
 
             if (CheckTopRightToBottomLeft(board))
-                return true;
+                return GameStatus.Win;
             
             if (CheckForDraw(board))
-                return true;
+                return GameStatus.Draw;
 
-            return false;
+            return GameStatus.InPlay;
         }
 
         private bool CheckRow(Board board)
         {
-            for (int row = 0; row < _sizeOfGrid; row++)
+            for (int row = 0; row < board.SizeOfBoard; row++)
             {
                 if (board.GetRow(row).Distinct().Count() == 1 && !board.GetRow(row).Contains("."))
                 {
@@ -46,7 +41,7 @@ namespace TicTacToe
 
         private bool CheckColumn(Board board)
         {
-            for(int column = 0; column < _sizeOfGrid; column++)
+            for(int column = 0; column < board.SizeOfBoard; column++)
             {
                 if (board.GetColumn(column).Distinct().Count() == 1 && !board.GetColumn(column).Contains("."))
                 {
@@ -61,7 +56,7 @@ namespace TicTacToe
         {
             List<string> diagonalSlopeRight = new List<string>();
 
-            for(int i = 0; i < _sizeOfGrid; i++)
+            for(int i = 0; i < board.SizeOfBoard; i++)
             {
                 diagonalSlopeRight.Add(board.GetPoint(i,i));
             }
@@ -74,7 +69,7 @@ namespace TicTacToe
         {
             List<string> diagonalSlopeLeft = new List<string>();
 
-            for(int row = 0, column = _sizeOfGrid - 1; row < _sizeOfGrid; row++, column--)
+            for(int row = 0, column = board.SizeOfBoard - 1; row < board.SizeOfBoard; row++, column--)
             {
                 diagonalSlopeLeft.Add(board.GetPoint(row, column));
             }
@@ -86,7 +81,7 @@ namespace TicTacToe
         {
             List<bool> drawCheck = new List<bool>();
 
-            for(int row = 0; row < _sizeOfGrid; row++)
+            for(int row = 0; row < board.SizeOfBoard; row++)
             {
                 drawCheck.Add(board.GetRow(row).Contains("."));
             }

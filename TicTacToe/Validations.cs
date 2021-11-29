@@ -1,3 +1,4 @@
+using System;
 using TicTacToe.Exceptions;
 
 namespace TicTacToe
@@ -6,28 +7,14 @@ namespace TicTacToe
     {
         public bool CheckMoveIsValid(Coordinates coordinates, Board board)
         {
-            int sizeOfBoard = board.GetRow(0).Length;
-            
-            if (coordinates.GetRow() >= sizeOfBoard || coordinates.GetColumn() >= sizeOfBoard || coordinates.GetRow() < 0 || coordinates.GetColumn() < 0)
+            if (coordinates.GetRow() >= board.SizeOfBoard || coordinates.GetColumn() >= board.SizeOfBoard || coordinates.GetRow() < 0 || coordinates.GetColumn() < 0)
             {
                 return false;
             }
             
             return board.GetPoint(coordinates.GetRow(), coordinates.GetColumn()) == ".";
         }
-        
-        public string[] ValidateInput(string input)
-        {
-            string[] stringArray = input.Split(',');
 
-            if (stringArray.Length != 2)
-            {
-                throw new InvalidInputException(input);
-            }
-
-            return stringArray;
-        }
-        
         public bool ValidateNumber(string input)
         {
             int number;
@@ -37,6 +24,18 @@ namespace TicTacToe
             }
 
             return true;
+        }
+
+        public bool InputIsACoordinate(string input)
+        {
+            string[] inputArray = input.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            if (ValidateNumber(inputArray[0]) && ValidateNumber(inputArray[1]))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

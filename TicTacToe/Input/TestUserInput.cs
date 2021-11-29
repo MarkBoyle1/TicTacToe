@@ -26,7 +26,11 @@ namespace TicTacToe
 
         public string GetUserInput()
         {
-            return _testInput;
+            // return _testInput;
+            string move = _listOfMoves[0];
+            _listOfMoves.RemoveAt(0);
+            
+            return move;
         }
     }
 }

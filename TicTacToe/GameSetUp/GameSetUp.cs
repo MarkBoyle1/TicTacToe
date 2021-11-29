@@ -5,7 +5,6 @@ namespace TicTacToe
 {
     public class GameSetUp : IGameSetUp
     {
-        private Gameplay _gameplay;
         private List<Player> _playerList;
         private IOutput _output;
         private IUserInput _userInput;
@@ -24,7 +23,7 @@ namespace TicTacToe
             int sizeOfBoard = GetSizeOfBoard();
             Board board = _boardFactory.GenerateInitialBoard(sizeOfBoard);
 
-            return new GameState(board, currentPlayer, _playerList, "In Play");
+            return new GameState(board, currentPlayer, _playerList, GameStatus.InPlay);
         }
 
         public List<Player> CreatePlayerList()
@@ -52,6 +51,14 @@ namespace TicTacToe
             _output.DisplayMessage("Which player will go first (enter 1 or 2):");
             string response = _userInput.GetUserInput();
             int playerNumber = Convert.ToInt32(response);
+
+            while (playerNumber < 1 || playerNumber > 2)
+            {
+                _output.DisplayMessage("Invalid input. Please try again: ");
+                response = _userInput.GetUserInput();
+                playerNumber = Convert.ToInt32(response);
+            }
+            
             return playerList[playerNumber - 1];
         }
 
@@ -59,7 +66,16 @@ namespace TicTacToe
         {
             _output.DisplayMessage("Please enter the size of the board:");
             string response = _userInput.GetUserInput();
-            return Convert.ToInt32(response);
+            int boardSize = Convert.ToInt32(response);
+            
+            while (boardSize < 1 || boardSize > 10)
+            {
+                _output.DisplayMessage("Invalid input. Please try again: ");
+                response = _userInput.GetUserInput();
+                boardSize = Convert.ToInt32(response);
+            }
+
+            return boardSize;
         }
     }
 }
