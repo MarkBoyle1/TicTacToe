@@ -31,16 +31,14 @@ namespace TicTacToe
         public GameState RunProgram()
         {
             SetUpInitialGame();
-            _gameState = PlayTurn();
-            
-            while (_gameState.Status == GameStatus.InPlay)
+            _gameState = PlayOneGame();
+
+            while (UserWantsToPlayAgain())
             {
-                _currentPlayer = SwapPlayers(_currentPlayer);
-                _gameState = PlayTurn();
+                _gameState = ResetGameState();
+                _gameState = PlayOneGame();
             }
 
-            UpdateScoreForWinner(_gameState);
-            _output.DisplayScores(_gameState._playerList);
             return _gameState;
         }
 
@@ -52,6 +50,22 @@ namespace TicTacToe
             _playerList = _gameState._playerList;
             _currentPlayer = _gameState.CurrentPlayer;
             _board = _gameState._board;
+        }
+
+        public GameState PlayOneGame()
+        {
+            _gameState = PlayTurn();
+            
+            while (_gameState.Status == GameStatus.InPlay)
+            {
+                _currentPlayer = SwapPlayers(_currentPlayer);
+                _gameState = PlayTurn();
+            }
+
+            UpdateScoreForWinner(_gameState);
+            _output.DisplayScores(_gameState._playerList);
+            
+            return _gameState;
         }
 
         private GameState PlayTurn()
@@ -111,6 +125,21 @@ namespace TicTacToe
                 Player winner = SwapPlayers(gameState.CurrentPlayer);
                 winner.IncreaseScoreByOne();
             }
+        }
+
+        private bool UserWantsToPlayAgain()
+        {
+            _output.DisplayMessage("Would you like to play another game? y/n:");
+            string response = _input.GetUserInput();
+            return response == "y";
+        }
+
+        private GameState ResetGameState()
+        {
+            _board = _boardFactory.GenerateInitialBoard(_board.SizeOfBoard);
+            _currentPlayer = SwapPlayers(_currentPlayer);
+
+            return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
     }
 }
