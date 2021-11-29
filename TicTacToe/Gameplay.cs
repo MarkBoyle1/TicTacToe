@@ -16,7 +16,7 @@ namespace TicTacToe
         private BoardFactory _boardFactory;
         private GameState _gameState;
         private Validations _validations;
-        private int _sizeOfBoard = 3;
+        private int _sizeOfBoard;
         private IGameSetUp _gameSetUp;
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
@@ -44,6 +44,7 @@ namespace TicTacToe
             _playerList = _gameState._playerList;
             _currentPlayer = _gameState.CurrentPlayer;
             _board = _gameState._board;
+            _sizeOfBoard = _board.SizeOfBoard;
         }
         
         public GameState PlayOneGame()
