@@ -4,7 +4,7 @@ namespace TicTacToe.Tests
 {
     public class ResultTests
     {
-        private ResultChecker _result = new ResultChecker(3);
+        private ResultChecker _result = new ResultChecker();
         private BoardFactory _boardFactory = new BoardFactory();
 
         [Fact]
@@ -20,7 +20,7 @@ namespace TicTacToe.Tests
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
             Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("x", coordinates3, updatedBoard1);
             
-            Assert.True(_result.CheckResults(updatedBoard2));
+            Assert.Equal(GameStatus.Win,_result.CheckResults(updatedBoard2));
         }
         
         [Fact]
@@ -36,7 +36,7 @@ namespace TicTacToe.Tests
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("o", coordinates2, updatedBoard);
             Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("o", coordinates3, updatedBoard1);
         
-            Assert.True(_result.CheckResults(updatedBoard2));
+            Assert.Equal(GameStatus.Win,_result.CheckResults(updatedBoard2));
         }
         
         [Fact]
@@ -50,7 +50,7 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", coordinates1, _board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
         
-            Assert.False(_result.CheckResults(updatedBoard1));
+            Assert.Equal(GameStatus.InPlay,_result.CheckResults(updatedBoard1));
         }
         
         [Fact]
@@ -64,7 +64,7 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", coordinates1, _board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
 
-            Assert.False(_result.CheckResults(updatedBoard1));
+            Assert.Equal(GameStatus.InPlay,_result.CheckResults(updatedBoard1));
         }
         
         [Fact]
@@ -80,7 +80,7 @@ namespace TicTacToe.Tests
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
             Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("x", coordinates3, updatedBoard1);
         
-            Assert.True(_result.CheckResults(updatedBoard2));
+            Assert.Equal(GameStatus.Win, _result.CheckResults(updatedBoard2));
         }
         
         [Fact]
@@ -96,7 +96,7 @@ namespace TicTacToe.Tests
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
             Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("x", coordinates3, updatedBoard1);
         
-            Assert.True(_result.CheckResults(updatedBoard2));
+            Assert.Equal(GameStatus.Win,_result.CheckResults(updatedBoard2));
         }
         
         [Fact]
@@ -112,7 +112,7 @@ namespace TicTacToe.Tests
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
             Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("x", coordinates3, updatedBoard1);
         
-            Assert.True(_result.CheckResults(updatedBoard2));
+            Assert.Equal(GameStatus.Win,_result.CheckResults(updatedBoard2));
         }
     }
 }

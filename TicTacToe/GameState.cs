@@ -7,9 +7,9 @@ namespace TicTacToe
         public Board _board { get; }
         public List<Player> _playerList { get; }
         public Player CurrentPlayer { get; }
-        public string Status { get; }
+        public GameStatus Status { get; }
 
-        public GameState(Board board, Player currentPlayer, List<Player> playerList, string status)
+        public GameState(Board board, Player currentPlayer, List<Player> playerList, GameStatus status)
         {
             _board = board;
             _playerList = playerList;

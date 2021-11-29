@@ -38,9 +38,11 @@ namespace TicTacToe.Tests
         {
             List<string> listOfMovesXWins = new List<string>() {"1,1", "1,2", "2,1", "1,3", "3,1"};
             Gameplay gameplayXWins = new Gameplay(new TestUserInput(listOfMovesXWins), new Output(), _defaultGameSetUp);
-            gameplayXWins.SetUpInitialGame();
-            GameState gameState = gameplayXWins.PlayOneGame();
-            Assert.Equal("Player1 wins!", gameState.Status);
+            
+            GameState gameState = gameplayXWins.RunProgram();
+            
+            Assert.Equal(GameStatus.Win, gameState.Status);
+            Assert.Equal("Player1", gameState.CurrentPlayer.Name);
         }
         
         [Fact]
@@ -48,9 +50,12 @@ namespace TicTacToe.Tests
         {
             _listOfMovesOWins = new List<string>() {"1,1", "1,2", "2,1", "2,2", "1,3", "3,2"};
             _gameplayOWins = new Gameplay(new TestUserInput(_listOfMovesOWins), new Output(), _defaultGameSetUp);
-            _gameplayOWins.SetUpInitialGame();
-            GameState gameState = _gameplayOWins.PlayOneGame();
-            Assert.Equal("Player2 wins!", gameState.Status);
+           
+            GameState gameState = _gameplayOWins.RunProgram();
+            
+            Assert.Equal(GameStatus.Win, gameState.Status);
+            Assert.Equal("Player2", gameState.CurrentPlayer.Name);
+
         }
 
         [Fact]
@@ -58,9 +63,10 @@ namespace TicTacToe.Tests
         {
             List<string> listOfMovesDraw = new List<string>() {"1,1", "1,2", "2,1", "2,3", "3,3", "2,2", "1,3", "3,1", "3,2"};
             Gameplay gameplayDraw = new Gameplay(new TestUserInput(listOfMovesDraw), new Output(), _defaultGameSetUp);
-            gameplayDraw.SetUpInitialGame();
-            GameState gameState = gameplayDraw.PlayOneGame();
-            Assert.Equal("Draw", gameState.Status);
+            
+            GameState gameState = gameplayDraw.RunProgram();
+            
+            Assert.Equal(GameStatus.Draw, gameState.Status);
         }
     }
 }

@@ -16,7 +16,6 @@ namespace TicTacToe
         private BoardFactory _boardFactory;
         private GameState _gameState;
         private Validations _validations;
-        private int _sizeOfBoard;
         private IGameSetUp _gameSetUp;
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
@@ -25,15 +24,22 @@ namespace TicTacToe
             _output = output;
             _gameSetUp = gameSetUp;
             _boardFactory = new BoardFactory();
-            _resultChecker = new ResultChecker(_sizeOfBoard);
+            _resultChecker = new ResultChecker();
             _validations = new Validations();
         }
         
-        public void RunProgram()
+        public GameState RunProgram()
         {
             SetUpInitialGame();
-            GameState result = PlayOneGame();
-            _output.DisplayMessage(result.Status);
+            _gameState = PlayTurn();
+            
+            while (_gameState.Status == GameStatus.InPlay)
+            {
+                _currentPlayer = SwapPlayers(_currentPlayer);
+                _gameState = PlayTurn();
+            }
+
+            return _gameState;
         }
 
         public void SetUpInitialGame()
@@ -44,98 +50,41 @@ namespace TicTacToe
             _playerList = _gameState._playerList;
             _currentPlayer = _gameState.CurrentPlayer;
             _board = _gameState._board;
-            _sizeOfBoard = _board.SizeOfBoard;
-        }
-        
-        public GameState PlayOneGame()
-        {
-            _output.DisplayBoard(_board, _sizeOfBoard);
-            
-            _gameState = PlayTurn();
-
-            while(!_resultChecker.CheckResults(_board))
-            {
-                _currentPlayer = SwapPlayers(_currentPlayer);
-                _gameState = PlayTurn();
-            }
-
-            if (_resultChecker.CheckForDraw(_board))
-            {
-                return new GameState(_board, _currentPlayer, _playerList, "Draw");
-            }
-
-            return new GameState(_board, _currentPlayer, _playerList, $"{_currentPlayer.Name} wins!");
         }
 
         private GameState PlayTurn()
         {
-            Coordinates coordinates = GetPlayerMove();
-            _board = MakeAMove(coordinates);
-
-            _output.DisplayBoard(_board, _sizeOfBoard);
-
-            return new GameState(_board, _currentPlayer, _playerList, "In Play");
-        }
-
-        public Board MakeAMove(Coordinates coordinates)
-        {
-            Board updatedBoard = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
-
-            return updatedBoard;
-        }
-
-        private Coordinates GetPlayerMove()
-        {
-            string input = CollectUserInput();
-            Coordinates coordinates = ProcessCoordinates(input);
+            _output.DisplayMessage("Please enter input (row/column or q for quit):");
+            string input = _input.GetUserInput();
             
-            while (!_validations.CheckMoveIsValid(coordinates, _board))
+            if (input == "q")
             {
-                _output.DisplayMessage("Move is not valid. Please try again.");
-                input = CollectUserInput();
-                coordinates = ProcessCoordinates(input);
+                //Save data to external file
+                return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
-
-            return coordinates;
-        }
-        
-        private string CollectUserInput()
-        {
-            string input = "";
-            bool isValid = false;
-
-            while (!isValid)
+            
+            if (_validations.InputIsACoordinate(input))
             {
-                try
+                Coordinates coordinates = ProcessInputIntoCoordinates(input);
+                if (_validations.CheckMoveIsValid(coordinates, _board))
                 {
-                    _output.DisplayMessage($"{_currentPlayer.Name} please enter row,column to place your {_currentPlayer.Marker}: ");
-
-                    input = _input.GetCoordinates();
-
-                    string[] stringArray = _validations.ValidateInput(input);
-
-                    bool rowIsNumber = _validations.ValidateNumber(stringArray[0]);
-                    bool columnIsNumber = _validations.ValidateNumber(stringArray[1]);
-
-                    if (rowIsNumber && columnIsNumber)
-                    {
-                        isValid = true;
-                    }
-                }
-                catch (InvalidInputException error)
-                {
-                    _output.DisplayMessage(error.Message);
-                }
-                catch (NotANumberException error)
-                {
-                    _output.DisplayMessage(error.Message);
+                    _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
+                    _output.DisplayBoard(_board);
+                    
+                    GameStatus gameStatus = _resultChecker.CheckResults(_board);
+                    Console.WriteLine(gameStatus.ToString());
+                    
+                    return new GameState(_board, _currentPlayer, _playerList, gameStatus);
                 }
             }
+            
+            _output.DisplayMessage("Invalid Input");
+            _currentPlayer = SwapPlayers(_currentPlayer);    //Swaps players to make sure current player gets another go.
 
-            return input;
+            return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
-        
-        private Coordinates ProcessCoordinates(string input)
+
+        private Coordinates ProcessInputIntoCoordinates(string input)
         {
             string[] stringArray = input.Split(',');
             

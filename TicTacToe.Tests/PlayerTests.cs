@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Moq;
 using Xunit;
 
@@ -10,7 +11,8 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_userInputEqualsX_when_GetPlayerMarker_then_PlayerMarkerEqualsX()
         {
-            GameSetUp _gameSetUp = new GameSetUp(new TestUserInput("x"), new Output());
+            List<string> testInput = new List<string>() {"x"};
+            GameSetUp _gameSetUp = new GameSetUp(new TestUserInput(testInput), new Output());
 
             Assert.Equal("x", _gameSetUp.GetPlayerMarker("Player1"));
         }
