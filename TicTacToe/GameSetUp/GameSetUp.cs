@@ -5,7 +5,6 @@ namespace TicTacToe
 {
     public class GameSetUp : IGameSetUp
     {
-        private Gameplay _gameplay;
         private List<Player> _playerList;
         private IOutput _output;
         private IUserInput _userInput;

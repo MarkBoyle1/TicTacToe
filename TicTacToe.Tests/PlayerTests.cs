@@ -16,5 +16,15 @@ namespace TicTacToe.Tests
 
             Assert.Equal("x", _gameSetUp.GetPlayerMarker("Player1"));
         }
+        
+        [Fact]
+        public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
+        {
+            Player player = new Player("Player1", "x");
+            
+            player.IncreaseScoreByOne();
+
+            Assert.Equal(1, player.Score);
+        }
     }
 }

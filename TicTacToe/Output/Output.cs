@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TicTacToe
 {
@@ -15,6 +16,13 @@ namespace TicTacToe
             {
                 Console.WriteLine(String.Join(',', board.GetRow(row)).Replace(',', ' '));
             }
+        }
+
+        public void DisplayScores(List<Player> playerList)
+        {
+            Console.WriteLine("Current Scores:");
+            Console.WriteLine(playerList[0].Name + ": " + playerList[0].Score);
+            Console.WriteLine(playerList[1].Name + ": " + playerList[1].Score);
         }
     }
 }

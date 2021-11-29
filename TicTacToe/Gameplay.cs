@@ -39,6 +39,8 @@ namespace TicTacToe
                 _gameState = PlayTurn();
             }
 
+            UpdateScoreForWinner(_gameState);
+            _output.DisplayScores(_gameState._playerList);
             return _gameState;
         }
 
@@ -72,8 +74,7 @@ namespace TicTacToe
                     _output.DisplayBoard(_board);
                     
                     GameStatus gameStatus = _resultChecker.CheckResults(_board);
-                    Console.WriteLine(gameStatus.ToString());
-                    
+
                     return new GameState(_board, _currentPlayer, _playerList, gameStatus);
                 }
             }
@@ -97,6 +98,19 @@ namespace TicTacToe
         private Player SwapPlayers(Player currentPlayer)
         {
             return currentPlayer == _playerList[0] ? _playerList[1] : _playerList[0];
+        }
+
+        private void UpdateScoreForWinner(GameState gameState)
+        {
+            if (gameState.Status == GameStatus.Win)
+            {
+                gameState.CurrentPlayer.IncreaseScoreByOne();
+            }
+            else if (gameState.Status == GameStatus.Quit)
+            {
+                Player winner = SwapPlayers(gameState.CurrentPlayer);
+                winner.IncreaseScoreByOne();
+            }
         }
     }
 }
