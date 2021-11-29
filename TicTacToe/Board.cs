@@ -5,11 +5,11 @@ namespace TicTacToe
     public class Board
     {
         private string[][] _board;
-        private int _sizeOfBoard;
+        public int SizeOfBoard { get; }
 
         public Board(string[][] board)
         {
-            _sizeOfBoard = board[0].Length;
+            SizeOfBoard = board[0].Length;
             _board = board;
         }
         
@@ -20,9 +20,9 @@ namespace TicTacToe
         
         public string[] GetColumn(int column)
         {
-            string[] columnValues = new string[_sizeOfBoard];
+            string[] columnValues = new string[SizeOfBoard];
             
-            for(int row = 0; row < _sizeOfBoard; row++)
+            for(int row = 0; row < SizeOfBoard; row++)
             {
                 columnValues[row] = _board[row][column];
             }

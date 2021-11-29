@@ -4,8 +4,8 @@ namespace TicTacToe
 {
     public class GameState
     {
-        private Board _board;
-        private List<Player> _playerList;
+        public Board _board { get; }
+        public List<Player> _playerList { get; }
         public Player CurrentPlayer { get; }
         public string Status { get; }
 

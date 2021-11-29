@@ -16,19 +16,35 @@ namespace TicTacToe
         private BoardFactory _boardFactory;
         private GameState _gameState;
         private Validations _validations;
-        private int _sizeOfBoard = 3;
+        private int _sizeOfBoard;
+        private IGameSetUp _gameSetUp;
 
-        public Gameplay(IUserInput input, IOutput output, List<Player> playerList)
+        public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
             _input = input;
             _output = output;
-            _playerList = playerList;
-            _currentPlayer = _playerList[0];
+            _gameSetUp = gameSetUp;
             _boardFactory = new BoardFactory();
-            _board = _boardFactory.GenerateInitialBoard(_sizeOfBoard);
             _resultChecker = new ResultChecker(_sizeOfBoard);
             _validations = new Validations();
-            _gameState = new GameState(_board, _currentPlayer, _playerList, "In Play");
+        }
+        
+        public void RunProgram()
+        {
+            SetUpInitialGame();
+            GameState result = PlayOneGame();
+            _output.DisplayMessage(result.Status);
+        }
+
+        public void SetUpInitialGame()
+        {
+            _output.DisplayMessage("Welcome to TicTacToe!");
+            _gameState = _gameSetUp.SetUpGame();
+            
+            _playerList = _gameState._playerList;
+            _currentPlayer = _gameState.CurrentPlayer;
+            _board = _gameState._board;
+            _sizeOfBoard = _board.SizeOfBoard;
         }
         
         public GameState PlayOneGame()
@@ -60,44 +76,7 @@ namespace TicTacToe
 
             return new GameState(_board, _currentPlayer, _playerList, "In Play");
         }
-        
-        public GameState RecursionPlayOneGame()
-        {
-            _output.DisplayBoard(_board, _sizeOfBoard);
-            
-            return RecursionPlayTurn(_gameState);
-        }
-        
-        private GameState RecursionPlayTurn(GameState gameState)
-        {
-            if (gameState.Status != "In Play")
-            {
-                return gameState;
-            }
 
-            _currentPlayer = gameState.CurrentPlayer;
-            
-            Coordinates coordinates = GetPlayerMove();
-            _board = MakeAMove(coordinates);
-            
-            _output.DisplayBoard(_board, _sizeOfBoard);
-
-            GameState newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, "In Play");
-            
-            if (_resultChecker.CheckForDraw(_board))
-            {
-                newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, "Draw");
-            }
-            else if(_resultChecker.CheckResults(_board))
-            {
-                newGameState = new GameState(_board, SwapPlayers(_currentPlayer), _playerList, $"{_currentPlayer.Name} wins!");
-            }
-
-            return RecursionPlayTurn(newGameState);
-        }
-        
-        
-        
         public Board MakeAMove(Coordinates coordinates)
         {
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
