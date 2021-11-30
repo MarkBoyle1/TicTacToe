@@ -16,17 +16,10 @@ namespace TicTacToe
         {
             _testInput = input;
         }
-        public string GetCoordinates()
-        {
-            string move = _listOfMoves[0];
-            _listOfMoves.RemoveAt(0);
-            
-            return move;
-        }
+      
 
         public string GetUserInput()
         {
-            // return _testInput;
             string move = _listOfMoves[0];
             _listOfMoves.RemoveAt(0);
             

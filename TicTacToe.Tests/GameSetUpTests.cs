@@ -12,8 +12,8 @@ namespace TicTacToe.Tests
             GameSetUp _gameSetUp = new GameSetUp(new TestUserInput(testInput), new Output());
             List<Player> playerList = new List<Player>()
             {
-                new Player("Player1", "x"),
-                new Player("Player2", "o"),
+                new HumanPlayer("Player1", "x"),
+                new HumanPlayer("Player2", "o"),
             };
             Player currentPlayer = _gameSetUp.ChoosePlayerToGoFirst(playerList);
             

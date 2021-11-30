@@ -9,8 +9,8 @@ namespace TicTacToe
         {
             IUserInput input = new UserInput();
             IOutput output = new Output();
-            Gameplay gameSetUp = new Gameplay(input, output, new GameSetUp(input, output));
-            gameSetUp.RunProgram();
+            Gameplay gamePlay = new Gameplay(input, output, new GameSetUp(input, output));
+            gamePlay.RunProgram();
         }
     }
 }

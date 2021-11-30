@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using TicTacToe.Exceptions;
 
 namespace TicTacToe
 {
@@ -70,12 +68,17 @@ namespace TicTacToe
 
         private GameState PlayTurn()
         {
-            _output.DisplayMessage("Please enter input (row/column or q for quit):");
-            string input = _input.GetUserInput();
+            _output.DisplayBoard(_board);
             
+            if (_currentPlayer.GetType() == typeof(HumanPlayer))
+            {
+                _output.DisplayMessage("Please enter your next move (row/column or q for quit):");
+            }
+            
+            string input = _currentPlayer.GetCoordinate(_board);
+
             if (input == "q")
             {
-                //Save data to external file
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
             
@@ -92,8 +95,12 @@ namespace TicTacToe
                     return new GameState(_board, _currentPlayer, _playerList, gameStatus);
                 }
             }
+
+            if (_currentPlayer.GetType() == typeof(HumanPlayer))
+            {
+                _output.DisplayMessage("Invalid Input");
+            }
             
-            _output.DisplayMessage("Invalid Input");
             _currentPlayer = SwapPlayers(_currentPlayer);    //Swaps players to make sure current player gets another go.
 
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace TicTacToe
 {
@@ -12,10 +13,12 @@ namespace TicTacToe
 
         public void DisplayBoard(Board board)
         {
+            Console.Clear();
             for(int row = 0; row < board.SizeOfBoard; row++)
             {
                 Console.WriteLine(String.Join(',', board.GetRow(row)).Replace(',', ' '));
             }
+            Thread.Sleep(200);
         }
 
         public void DisplayScores(List<Player> playerList)

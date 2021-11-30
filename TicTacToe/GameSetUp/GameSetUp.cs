@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TicTacToe.Exceptions;
 
 namespace TicTacToe
 {
@@ -34,8 +35,16 @@ namespace TicTacToe
             {
                 string playerName = "Player" + i;
                 string marker = GetPlayerMarker(playerName);
+                PlayerType type = GetPlayerType(playerName);
 
-                playerList.Add(new Player(playerName, marker));
+                if (type == PlayerType.Human)
+                {
+                    playerList.Add(new HumanPlayer(playerName, marker));
+                }
+                else if (type == PlayerType.BadComputer)
+                {
+                    playerList.Add(new BadComputerPlayer(playerName, marker));
+                }
             }
             return playerList;
         }
@@ -76,6 +85,31 @@ namespace TicTacToe
             }
 
             return boardSize;
+        }
+
+        private PlayerType GetPlayerType(string playerName)
+        {
+            _output.DisplayMessage($"Please enter the player type for {playerName} " +
+                                   $"(0 = Human, " +
+                                   $"1 = Bad Computer Player, " +
+                                   $"2 = Good Computer Player):");
+            while (true)
+            {
+                string response = _userInput.GetUserInput();
+
+                switch (response)
+                {
+                    case "0":
+                        return PlayerType.Human;
+                    case "1":
+                        return PlayerType.BadComputer;
+                    case "2":
+                        return PlayerType.GoodComputer;
+                    default:
+                        _output.DisplayMessage("Invalid Input. Please Try Again:");
+                        break;
+                }
+            }
         }
     }
 }
