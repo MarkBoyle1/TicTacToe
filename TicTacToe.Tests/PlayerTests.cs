@@ -20,7 +20,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
         {
-            Player player = new HumanPlayer("Player1", "x");
+            Player player = new HumanPlayer("Player1", "x",new TestUserInput(new List<string>() {"1"}), new Output());
             
             player.IncreaseScoreByOne();
 
@@ -37,9 +37,9 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,0), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,0), updatedBoard);
 
-            string computerMove = player.GetCoordinate(updatedBoard1);
+            string computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("3,1", computerMove);
+            Assert.Equal("2,0", computerMove);
         }
         
         [Fact]
@@ -52,9 +52,9 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,1), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,2), updatedBoard);
 
-            string computerMove = player.GetCoordinate(updatedBoard1);
+            string computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("1,1", computerMove);
+            Assert.Equal("0,0", computerMove);
         }
         
         [Fact]
@@ -67,9 +67,9 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,0), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,1), updatedBoard);
 
-            string computerMove = player.GetCoordinate(updatedBoard1);
+            string computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("3,3", computerMove);
+            Assert.Equal("2,2", computerMove);
         }
         
         [Fact]
@@ -79,9 +79,9 @@ namespace TicTacToe.Tests
             
             Board board = _boardFactory.GenerateInitialBoard(3);
 
-            string computerMove = player.GetCoordinate(board);
+            string computerMove = player.GetPlayerMove(board);
             
-            Assert.Equal("2,2", computerMove);
+            Assert.Equal("1,1", computerMove);
         }
     }
 }

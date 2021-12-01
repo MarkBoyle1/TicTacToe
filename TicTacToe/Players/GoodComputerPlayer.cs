@@ -8,6 +8,7 @@ namespace TicTacToe
     public class GoodComputerPlayer : Player
     {
         public List<string> _movesList;
+        private Random _random = new Random();
         public GoodComputerPlayer(string name, string marker)
             : base(name, marker)
         {
@@ -15,7 +16,7 @@ namespace TicTacToe
 
         }
         
-        public override string GetCoordinate(Board board)
+        public override string GetPlayerMove(Board board)
         {
             string answer = CheckColumns(board);
             answer = answer == null ? CheckRows(board) : answer;
@@ -33,8 +34,8 @@ namespace TicTacToe
                 string[] columnArray = board.GetColumn(column);
                 if (columnArray.Distinct().Count() == 2 && columnArray.Count(x => x == ".") == 1)
                 {
-                    int indexOfFreeSpace = Array.IndexOf(columnArray, ".") + 1;
-                    return indexOfFreeSpace + "," + (column + 1);
+                    int indexOfFreeSpace = Array.IndexOf(columnArray, ".");
+                    return indexOfFreeSpace + "," + (column);
                 }
             }
 
@@ -48,8 +49,8 @@ namespace TicTacToe
                 string[] rowArray = board.GetRow(row);
                 if (rowArray.Distinct().Count() == 2 && rowArray.Count(x => x == ".") == 1)
                 {
-                    int indexOfFreeSpace = Array.IndexOf(rowArray, ".") + 1;
-                    return (row + 1) + "," + indexOfFreeSpace;
+                    int indexOfFreeSpace = Array.IndexOf(rowArray, ".");
+                    return (row) + "," + indexOfFreeSpace;
                 }
             }
 
@@ -62,7 +63,7 @@ namespace TicTacToe
 
             if (diagonalSlopeRight.Distinct().Count() == 2 && diagonalSlopeRight.Count(x => x == ".") == 1)
             {
-                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeRight, ".") + 1;
+                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeRight, ".");
                 return indexOfFreeSpace + "," + indexOfFreeSpace;
             }
             
@@ -75,8 +76,8 @@ namespace TicTacToe
 
             if (diagonalSlopeLeft.Distinct().Count() == 2 && diagonalSlopeLeft.Count(x => x == ".") == 1)
             {
-                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeLeft, ".") + 1;
-                return indexOfFreeSpace + "," + (board.SizeOfBoard - indexOfFreeSpace + 1);
+                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeLeft, ".");
+                return indexOfFreeSpace + "," + (board.SizeOfBoard - 1 - indexOfFreeSpace);
             }
             
             return null;
@@ -84,28 +85,34 @@ namespace TicTacToe
 
         private string GetNextMove(Board board)
         {
-            ResetComputerMovesIfRequired(board);
-            string move = _movesList[0];
-            _movesList.RemoveAt(0);
-            return move;
-        }
+            string middleSpace = null;
 
-        public void ResetComputerMovesIfRequired(Board board)
-        {
-            int positionsOnBoard = board.SizeOfBoard * board.SizeOfBoard;
-            int freeSpaces = board.GetNumberOfFreeSpaces();
-            if (freeSpaces == positionsOnBoard)
+            if (board.SizeOfBoard % 2 != 0)
             {
-                _movesList = new List<string>() {"2,2", "1,1", "1,3", "3,3", "1,3", "1,2", "2,1", "3,2", "2,3"};
+                middleSpace = (board.SizeOfBoard / 2) + "," + (board.SizeOfBoard / 2);
             }
-            else if (freeSpaces == positionsOnBoard - 1 && board.GetPoint(1,1) == ".")
+            
+            List<string> idealMoves = new List<string>()
             {
-                _movesList = new List<string>() {"2,2", "1,1", "1,3", "3,3", "1,3", "1,2", "2,1", "3,2", "2,3"};
-            }
-            else if (freeSpaces == positionsOnBoard - 1)
+                middleSpace,
+                "0,0",
+                "0," + (board.SizeOfBoard - 1),
+                (board.SizeOfBoard - 1) + ",0",
+                (board.SizeOfBoard - 1) + "," + (board.SizeOfBoard - 1)
+            };
+            
+            List<string> freeSpaces = board.GetAllFreeSpaces();
+
+            foreach (var move in idealMoves)
             {
-                _movesList = new List<string>() {"1,1", "1,3", "3,3", "1,3", "1,2", "2,1", "3,2", "2,3"};
+                if (freeSpaces.Contains(move))
+                {
+                    return move;
+                }
             }
+
+            int randomIndex = _random.Next(0, freeSpaces.Count);
+            return freeSpaces[randomIndex];
         }
     }
 }

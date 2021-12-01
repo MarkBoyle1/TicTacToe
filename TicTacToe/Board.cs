@@ -71,5 +71,23 @@ namespace TicTacToe
 
             return numberOfFreeSpaces;
         }
+
+        public List<string> GetAllFreeSpaces()
+        {
+            List<string> freeSpaces = new List<string>();
+
+            for (int i = 0; i < SizeOfBoard; i++)
+            {
+                for (int j = 0; j < SizeOfBoard; j++)
+                {
+                    if (_board[i][j] == ".")
+                    {
+                        freeSpaces.Add(i + "," + j);
+                    }
+                }
+            }
+
+            return freeSpaces;
+        }
     }
 }

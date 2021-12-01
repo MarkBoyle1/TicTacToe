@@ -8,8 +8,8 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_listOfMovesXWins_when_PlayOneGame_then_return_Player1()
         {
-            List<string> listOfMovesX = new List<string>() {"1,1", "2,1", "3,1", "n"};
-            List<string> listOfMovesO = new List<string>() {"1,2", "1,3", "n"};
+            List<string> listOfMovesX = new List<string>() {"0,0", "1,0", "2,0", "n"};
+            List<string> listOfMovesO = new List<string>() {"0,1", "0,2", "n"};
 
             List<Player> _playerList = new List<Player>()
             {
@@ -30,8 +30,8 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_listOfMovesOWins_when_PlayOneGame_then_return_Player2()
         {
-            List<string> listOfMovesX = new List<string>() {"1,1", "2,1", "1,3", "n"};
-            List<string> listOfMovesO = new List<string>() {"1,2", "2,2", "3,2", "n"};
+            List<string> listOfMovesX = new List<string>() {"0,0", "1,0", "0,2", "n"};
+            List<string> listOfMovesO = new List<string>() {"0,1", "1,1", "2,1", "n"};
 
             List<Player> _playerList = new List<Player>()
             {
@@ -52,8 +52,8 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_listOfMovesCreatesDraw_when_PlayOneGame_then_return_Draw()
         {
-            List<string> listOfMovesX = new List<string>() {"1,1", "3,1", "3,2", "1,3", "2,3", "n"};
-            List<string> listOfMovesO = new List<string>() {"1,2", "2,2", "3,3", "2,1", "n"};
+            List<string> listOfMovesX = new List<string>() {"0,0", "2,0", "2,1", "0,2", "1,2", "n"};
+            List<string> listOfMovesO = new List<string>() {"0,1", "1,1", "2,2", "1,0", "n"};
 
             List<Player> _playerList = new List<Player>()
             {
@@ -73,8 +73,8 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_twoGamesArePlayed_when_RunProgram_then_PlayerOnesScoreEquals2()
         {
-            List<string> listOfMovesX = new List<string>() {"1,1", "2,1", "3,1", "1,2", "2,2", "3,2"};
-            List<string> listOfMovesO = new List<string>() {"1,2", "1,3", "1,1", "2,1", "1,3"};
+            List<string> listOfMovesX = new List<string>() {"0,0", "1,0", "2,0", "0,1", "1,1", "2,1"};
+            List<string> listOfMovesO = new List<string>() {"0,1", "0,2", "0,0", "1,0", "0,2"};
 
 
             List<Player> _playerList = new List<Player>()

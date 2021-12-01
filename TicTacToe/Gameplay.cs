@@ -13,7 +13,6 @@ namespace TicTacToe
         private ResultChecker _resultChecker;
         private BoardFactory _boardFactory;
         private GameState _gameState;
-        private Validations _validations;
         private IGameSetUp _gameSetUp;
         private string Quit = "q";
         private string Yes = "y";
@@ -26,7 +25,6 @@ namespace TicTacToe
             _gameSetUp = gameSetUp;
             _boardFactory = new BoardFactory();
             _resultChecker = new ResultChecker();
-            _validations = new Validations();
         }
         
         public GameState RunProgram()
@@ -72,49 +70,31 @@ namespace TicTacToe
         private GameState PlayTurn()
         {
             _output.DisplayBoard(_board);
-            
-            if (_currentPlayer.GetType() == typeof(HumanPlayer))
-            {
-                _output.DisplayMessage(OutputMessages.EnterNextMove);
-            }
-            
-            string input = _currentPlayer.GetCoordinate(_board);
+
+            _output.DisplayMessage(OutputMessages.EnterNextMove);
+            string input = _currentPlayer.GetPlayerMove(_board);
 
             if (input == Quit)
             {
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
+
+            Coordinates coordinates = ConvertInputIntoCoordinates(input);
+
+            _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
+            _output.DisplayBoard(_board);
             
-            if (_validations.InputIsACoordinate(input))
-            {
-                Coordinates coordinates = ProcessInputIntoCoordinates(input);
-                if (_validations.CheckMoveIsValid(coordinates, _board))
-                {
-                    _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
-                    _output.DisplayBoard(_board);
-                    
-                    GameStatus gameStatus = _resultChecker.CheckResults(_board);
-
-                    return new GameState(_board, _currentPlayer, _playerList, gameStatus);
-                }
-            }
-
-            if (_currentPlayer.GetType() == typeof(HumanPlayer))
-            {
-                _output.DisplayMessage(OutputMessages.InvalidInput);
-            }
+            GameStatus gameStatus = _resultChecker.CheckResults(_board);
             
-            _currentPlayer = SwapPlayers(_currentPlayer);    //Swaps players to make sure current player gets another go.
-
-            return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
+            return new GameState(_board, _currentPlayer, _playerList, gameStatus);
         }
 
-        private Coordinates ProcessInputIntoCoordinates(string input)
+        private Coordinates ConvertInputIntoCoordinates(string input)
         {
             string[] stringArray = input.Split(',');
             
-            int row = Convert.ToInt32(stringArray[0]) - 1;
-            int column = Convert.ToInt32(stringArray[1]) - 1;
+            int row = Convert.ToInt32(stringArray[0]);
+            int column = Convert.ToInt32(stringArray[1]);
             
             return  new Coordinates(row, column);
         }

@@ -38,7 +38,7 @@ namespace TicTacToe
 
                 if (type == PlayerType.Human)
                 {
-                    playerList.Add(new HumanPlayer(playerName, marker));
+                    playerList.Add(new HumanPlayer(playerName, marker, _userInput, _output));
                 }
                 else if (type == PlayerType.BadComputer)
                 {

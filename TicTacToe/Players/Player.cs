@@ -17,7 +17,7 @@ namespace TicTacToe
             Score += 1;
         }
 
-        public virtual string GetCoordinate(Board _board)
+        public virtual string GetPlayerMove(Board _board)
         {
             return "0";
         }

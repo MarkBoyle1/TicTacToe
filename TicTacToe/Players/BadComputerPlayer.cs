@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TicTacToe
 {
@@ -11,12 +12,13 @@ namespace TicTacToe
         {
         }
         
-        public override string GetCoordinate(Board board)
+        public override string GetPlayerMove(Board board)
         {
-            int randomRow = _random.Next(1, board.SizeOfBoard + 1);
-            int randomColumn= _random.Next(1, board.SizeOfBoard + 1);
+            List<string> freeSpaces = board.GetAllFreeSpaces();
+            
+            int randomIndex = _random.Next(0, freeSpaces.Count);
 
-            return randomRow + "," + randomColumn;
+            return freeSpaces[randomIndex];
         }
     }
 }

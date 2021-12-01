@@ -12,7 +12,7 @@ namespace TicTacToe
             _listOfMoves = moves;
         }
         
-        public override string GetCoordinate(Board _board)
+        public override string GetPlayerMove(Board board)
         {
             string move = _listOfMoves[0];
             _listOfMoves.RemoveAt(0);
