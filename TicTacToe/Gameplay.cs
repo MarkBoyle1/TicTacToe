@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using TicTacToe.Exceptions;
 
 namespace TicTacToe
 {
@@ -15,8 +13,10 @@ namespace TicTacToe
         private ResultChecker _resultChecker;
         private BoardFactory _boardFactory;
         private GameState _gameState;
-        private Validations _validations;
         private IGameSetUp _gameSetUp;
+        private string Quit = "q";
+        private string Yes = "y";
+        private string No = "n";
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
@@ -25,7 +25,6 @@ namespace TicTacToe
             _gameSetUp = gameSetUp;
             _boardFactory = new BoardFactory();
             _resultChecker = new ResultChecker();
-            _validations = new Validations();
         }
         
         public GameState RunProgram()
@@ -44,7 +43,7 @@ namespace TicTacToe
 
         public void SetUpInitialGame()
         {
-            _output.DisplayMessage("Welcome to TicTacToe!");
+            _output.DisplayMessage(OutputMessages.WelcomeMessage);
             _gameState = _gameSetUp.SetUpGame();
             
             _playerList = _gameState._playerList;
@@ -70,41 +69,32 @@ namespace TicTacToe
 
         private GameState PlayTurn()
         {
-            _output.DisplayMessage("Please enter input (row/column or q for quit):");
-            string input = _input.GetUserInput();
-            
-            if (input == "q")
+            _output.DisplayBoard(_board);
+
+            _output.DisplayMessage(OutputMessages.EnterNextMove);
+            string input = _currentPlayer.GetPlayerMove(_board);
+
+            if (input == Quit)
             {
-                //Save data to external file
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
-            
-            if (_validations.InputIsACoordinate(input))
-            {
-                Coordinates coordinates = ProcessInputIntoCoordinates(input);
-                if (_validations.CheckMoveIsValid(coordinates, _board))
-                {
-                    _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
-                    _output.DisplayBoard(_board);
-                    
-                    GameStatus gameStatus = _resultChecker.CheckResults(_board);
 
-                    return new GameState(_board, _currentPlayer, _playerList, gameStatus);
-                }
-            }
-            
-            _output.DisplayMessage("Invalid Input");
-            _currentPlayer = SwapPlayers(_currentPlayer);    //Swaps players to make sure current player gets another go.
+            Coordinates coordinates = ConvertInputIntoCoordinates(input);
 
-            return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
+            _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
+            _output.DisplayBoard(_board);
+            
+            GameStatus gameStatus = _resultChecker.CheckResults(_board);
+            
+            return new GameState(_board, _currentPlayer, _playerList, gameStatus);
         }
 
-        private Coordinates ProcessInputIntoCoordinates(string input)
+        private Coordinates ConvertInputIntoCoordinates(string input)
         {
             string[] stringArray = input.Split(',');
             
-            int row = Convert.ToInt32(stringArray[0]) - 1;
-            int column = Convert.ToInt32(stringArray[1]) - 1;
+            int row = Convert.ToInt32(stringArray[0]);
+            int column = Convert.ToInt32(stringArray[1]);
             
             return  new Coordinates(row, column);
         }
@@ -129,16 +119,23 @@ namespace TicTacToe
 
         private bool UserWantsToPlayAgain()
         {
-            _output.DisplayMessage("Would you like to play another game? y/n:");
+            _output.DisplayMessage(OutputMessages.PlayAnotherGameQuestion);
             string response = _input.GetUserInput();
-            return response == "y";
+
+            while (response != Yes && response != No)
+            {
+                _output.DisplayMessage(OutputMessages.InvalidInput);
+                response = _input.GetUserInput();
+            }
+            
+            return response == Yes;
         }
 
         private GameState ResetGameState()
         {
             _board = _boardFactory.GenerateInitialBoard(_board.SizeOfBoard);
             _currentPlayer = SwapPlayers(_currentPlayer);
-
+            
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
     }

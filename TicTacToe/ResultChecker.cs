@@ -54,39 +54,22 @@ namespace TicTacToe
 
         private bool CheckTopLeftToBottomRight(Board board)
         {
-            List<string> diagonalSlopeRight = new List<string>();
+            string[] diagonalSlopeRight = board.GetDiangonalTopLeftToBottomRight();
 
-            for(int i = 0; i < board.SizeOfBoard; i++)
-            {
-                diagonalSlopeRight.Add(board.GetPoint(i,i));
-            }
-            
             return diagonalSlopeRight.Distinct().Count() == 1 && !diagonalSlopeRight.Contains(".");
             
         }
         
         private bool CheckTopRightToBottomLeft(Board board)
         {
-            List<string> diagonalSlopeLeft = new List<string>();
+            string[] diagonalSlopeLeft = board.GetDiangonalTopRightToBottomLeft();
 
-            for(int row = 0, column = board.SizeOfBoard - 1; row < board.SizeOfBoard; row++, column--)
-            {
-                diagonalSlopeLeft.Add(board.GetPoint(row, column));
-            }
-            
             return diagonalSlopeLeft.Distinct().Count() == 1 && !diagonalSlopeLeft.Contains(".");
         }
         
         public bool CheckForDraw(Board board)
         {
-            List<bool> drawCheck = new List<bool>();
-
-            for(int row = 0; row < board.SizeOfBoard; row++)
-            {
-                drawCheck.Add(board.GetRow(row).Contains("."));
-            }
-            
-            return !drawCheck.Contains(true);
+            return board.GetNumberOfFreeSpaces() == 0;
         }
     }
 }

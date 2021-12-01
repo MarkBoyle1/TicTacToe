@@ -2,15 +2,17 @@ using System.Collections.Generic;
 
 namespace TicTacToe
 {
-    public class TestUserInput : IUserInput
+    public class TestPlayer : Player
     {
         private List<string> _listOfMoves;
-        public TestUserInput(List<string> listOfMoves)
+        
+        public TestPlayer(string name, string marker, List<string> moves)
+            : base(name, marker)
         {
-            _listOfMoves = listOfMoves;
+            _listOfMoves = moves;
         }
         
-        public string GetUserInput()
+        public override string GetPlayerMove(Board board)
         {
             string move = _listOfMoves[0];
             _listOfMoves.RemoveAt(0);
