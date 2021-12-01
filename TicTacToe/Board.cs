@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TicTacToe
@@ -29,10 +30,46 @@ namespace TicTacToe
 
             return columnValues;
         }
+        
+        public string[] GetDiangonalTopLeftToBottomRight()
+        {
+            List<string> diagonalSlopeRight = new List<string>();
+
+            for(int i = 0; i < SizeOfBoard; i++)
+            {
+                diagonalSlopeRight.Add(GetPoint(i,i));
+            }
+            
+            return diagonalSlopeRight.ToArray();
+        }
+        
+        public string[] GetDiangonalTopRightToBottomLeft()
+        {
+            List<string> diagonalSlopeLeft = new List<string>();
+
+            for(int row = 0, column = SizeOfBoard - 1; row < SizeOfBoard; row++, column--)
+            {
+                diagonalSlopeLeft.Add(GetPoint(row, column));
+            }
+            
+            return diagonalSlopeLeft.ToArray();
+        }
 
         public string GetPoint(int row, int column)
         {
             return _board[row][column];
+        }
+
+        public int GetNumberOfFreeSpaces()
+        {
+            int numberOfFreeSpaces = 0;
+            
+            foreach (var row in _board)
+            {
+                numberOfFreeSpaces += row.Count(x => x == ".");
+            }
+
+            return numberOfFreeSpaces;
         }
     }
 }

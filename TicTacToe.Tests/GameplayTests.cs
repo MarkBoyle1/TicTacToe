@@ -19,7 +19,7 @@ namespace TicTacToe.Tests
             
             IGameSetUp _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
             
-            Gameplay gameplayXWins = new Gameplay(new TestUserInput(listOfMovesX), new Output(), _defaultGameSetUp);
+            Gameplay gameplayXWins = new Gameplay(new TestUserInput(new List<string>() {"n"}), new Output(), _defaultGameSetUp);
             
             GameState gameState = gameplayXWins.RunProgram();
             
@@ -40,7 +40,7 @@ namespace TicTacToe.Tests
             };
             
             IGameSetUp gameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
-            Gameplay gameplayOWins = new Gameplay(new TestUserInput(listOfMovesO), new Output(), gameSetUp);
+            Gameplay gameplayOWins = new Gameplay(new TestUserInput(new List<string>() {"n"}), new Output(), gameSetUp);
            
             GameState gameState = gameplayOWins.RunProgram();
             
@@ -63,7 +63,7 @@ namespace TicTacToe.Tests
             
             IGameSetUp _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
             
-            Gameplay gameplayDraw = new Gameplay(new TestUserInput(listOfMovesX), new Output(), _defaultGameSetUp);
+            Gameplay gameplayDraw = new Gameplay(new TestUserInput(new List<string>() {"n"}), new Output(), _defaultGameSetUp);
             
             GameState gameState = gameplayDraw.RunProgram();
             

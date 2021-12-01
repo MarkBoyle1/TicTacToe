@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TicTacToe.Exceptions;
 
 namespace TicTacToe
 {
@@ -45,25 +44,29 @@ namespace TicTacToe
                 {
                     playerList.Add(new BadComputerPlayer(playerName, marker));
                 }
+                else if (type == PlayerType.GoodComputer)
+                {
+                    playerList.Add(new GoodComputerPlayer(playerName, marker));
+                }
             }
             return playerList;
         }
 
         public string GetPlayerMarker(string playerName)
         {
-            _output.DisplayMessage($"Please enter the marker for {playerName}:");
+            _output.DisplayMessage(OutputMessages.EnterMarkerForPlayer + $"{playerName}:");
             return _userInput.GetUserInput();
         }
 
         public Player ChoosePlayerToGoFirst(List<Player> playerList)
         {
-            _output.DisplayMessage("Which player will go first (enter 1 or 2):");
+            _output.DisplayMessage(OutputMessages.WhichPlayerGoesFirst);
             string response = _userInput.GetUserInput();
             int playerNumber = Convert.ToInt32(response);
 
             while (playerNumber < 1 || playerNumber > 2)
             {
-                _output.DisplayMessage("Invalid input. Please try again: ");
+                _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _userInput.GetUserInput();
                 playerNumber = Convert.ToInt32(response);
             }
@@ -79,7 +82,7 @@ namespace TicTacToe
             
             while (boardSize < 1 || boardSize > 10)
             {
-                _output.DisplayMessage("Invalid input. Please try again: ");
+                _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _userInput.GetUserInput();
                 boardSize = Convert.ToInt32(response);
             }
@@ -106,7 +109,7 @@ namespace TicTacToe
                     case "2":
                         return PlayerType.GoodComputer;
                     default:
-                        _output.DisplayMessage("Invalid Input. Please Try Again:");
+                        _output.DisplayMessage(OutputMessages.InvalidInput);
                         break;
                 }
             }

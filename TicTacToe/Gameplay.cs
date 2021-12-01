@@ -15,6 +15,9 @@ namespace TicTacToe
         private GameState _gameState;
         private Validations _validations;
         private IGameSetUp _gameSetUp;
+        private string Quit = "q";
+        private string Yes = "y";
+        private string No = "n";
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
@@ -42,7 +45,7 @@ namespace TicTacToe
 
         public void SetUpInitialGame()
         {
-            _output.DisplayMessage("Welcome to TicTacToe!");
+            _output.DisplayMessage(OutputMessages.WelcomeMessage);
             _gameState = _gameSetUp.SetUpGame();
             
             _playerList = _gameState._playerList;
@@ -72,12 +75,12 @@ namespace TicTacToe
             
             if (_currentPlayer.GetType() == typeof(HumanPlayer))
             {
-                _output.DisplayMessage("Please enter your next move (row/column or q for quit):");
+                _output.DisplayMessage(OutputMessages.EnterNextMove);
             }
             
             string input = _currentPlayer.GetCoordinate(_board);
 
-            if (input == "q")
+            if (input == Quit)
             {
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
@@ -98,7 +101,7 @@ namespace TicTacToe
 
             if (_currentPlayer.GetType() == typeof(HumanPlayer))
             {
-                _output.DisplayMessage("Invalid Input");
+                _output.DisplayMessage(OutputMessages.InvalidInput);
             }
             
             _currentPlayer = SwapPlayers(_currentPlayer);    //Swaps players to make sure current player gets another go.
@@ -136,16 +139,23 @@ namespace TicTacToe
 
         private bool UserWantsToPlayAgain()
         {
-            _output.DisplayMessage("Would you like to play another game? y/n:");
+            _output.DisplayMessage(OutputMessages.PlayAnotherGameQuestion);
             string response = _input.GetUserInput();
-            return response == "y";
+
+            while (response != Yes && response != No)
+            {
+                _output.DisplayMessage(OutputMessages.InvalidInput);
+                response = _input.GetUserInput();
+            }
+            
+            return response == Yes;
         }
 
         private GameState ResetGameState()
         {
             _board = _boardFactory.GenerateInitialBoard(_board.SizeOfBoard);
             _currentPlayer = SwapPlayers(_currentPlayer);
-
+            
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
     }
