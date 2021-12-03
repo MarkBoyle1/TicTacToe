@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TicTacToe
 {
@@ -14,9 +16,12 @@ namespace TicTacToe
         private BoardFactory _boardFactory;
         private GameState _gameState;
         private IGameSetUp _gameSetUp;
-        private string Quit = "q";
-        private string Yes = "y";
-        private string No = "n";
+        private const string Quit = "q";
+        private const string Save = "s";
+        private const string Yes = "y";
+        private const string No = "n";
+        private const string SavedBoardFilePath = "SavedBoardFile.json";
+        private const string SavedGameStateFilePath = "SavedFile.json";
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
@@ -29,13 +34,22 @@ namespace TicTacToe
         
         public GameState RunProgram()
         {
+            _output.DisplayMessage(OutputMessages.WelcomeMessage);
+            _output.DisplayMessage(OutputMessages.NewOrPreviousGame);
+            string response = _input.GetUserInput();
+
+            _gameState = response == Yes 
+                ? _gameSetUp.LoadPreviousGame() 
+                : _gameSetUp.SetUpNewGame();
+
             SetUpInitialGame();
-            _gameState = PlayOneGame();
+            
+            _gameState = PlayOneRound();
 
             while (UserWantsToPlayAgain())
             {
                 _gameState = ResetGameState();
-                _gameState = PlayOneGame();
+                _gameState = PlayOneRound();
             }
 
             return _gameState;
@@ -43,15 +57,12 @@ namespace TicTacToe
 
         public void SetUpInitialGame()
         {
-            _output.DisplayMessage(OutputMessages.WelcomeMessage);
-            _gameState = _gameSetUp.SetUpGame();
-            
-            _playerList = _gameState._playerList;
+            _playerList = _gameState.PlayerList;
             _currentPlayer = _gameState.CurrentPlayer;
-            _board = _gameState._board;
+            _board = _gameState.Board;
         }
-
-        public GameState PlayOneGame()
+        
+        public GameState PlayOneRound()
         {
             _gameState = PlayTurn();
             
@@ -61,9 +72,12 @@ namespace TicTacToe
                 _gameState = PlayTurn();
             }
 
-            UpdateScoreForWinner(_gameState);
-            _output.DisplayScores(_gameState._playerList);
-            
+            if (_gameState.Status is GameStatus.Win or GameStatus.Quit)
+            {
+                UpdateScoreForWinner(_gameState);
+                _output.DisplayScores(_gameState.PlayerList);
+            }
+
             return _gameState;
         }
 
@@ -71,12 +85,18 @@ namespace TicTacToe
         {
             _output.DisplayBoard(_board);
 
-            _output.DisplayMessage(OutputMessages.EnterNextMove);
+            _output.DisplayMessage(_currentPlayer.Name + OutputMessages.EnterNextMove);
             string input = _currentPlayer.GetPlayerMove(_board);
 
             if (input == Quit)
             {
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
+            }
+
+            if (input == Save)
+            {
+                SaveGameState();
+                return new GameState(_board, _currentPlayer, _playerList, GameStatus.Saved);
             }
 
             Coordinates coordinates = ConvertInputIntoCoordinates(input);
@@ -127,7 +147,7 @@ namespace TicTacToe
                 _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _input.GetUserInput();
             }
-            
+
             return response == Yes;
         }
 
@@ -137,6 +157,15 @@ namespace TicTacToe
             _currentPlayer = SwapPlayers(_currentPlayer);
             
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
+        }
+
+        private void SaveGameState()
+        {
+            string gameStateJsonString = JsonSerializer.Serialize(_gameState);
+            File.WriteAllText(SavedGameStateFilePath, gameStateJsonString);
+            
+            string boardJsonString = JsonSerializer.Serialize(_board);
+            File.WriteAllText(SavedBoardFilePath, boardJsonString);
         }
     }
 }

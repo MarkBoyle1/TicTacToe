@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TicTacToe
 {
@@ -9,6 +13,8 @@ namespace TicTacToe
         private IOutput _output;
         private IUserInput _userInput;
         private BoardFactory _boardFactory = new BoardFactory();
+        private const string SavedBoardFilePath = "SavedBoardFile.json";
+        private const string SavedGameStateFilePath = "SavedFile.json";
 
         public GameSetUp(IUserInput userInput, IOutput output)
         {
@@ -16,7 +22,7 @@ namespace TicTacToe
             _output = output;
         }
 
-        public GameState SetUpGame()
+        public GameState SetUpNewGame()
         {
             _playerList = CreatePlayerList();
             Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
@@ -38,15 +44,15 @@ namespace TicTacToe
 
                 if (type == PlayerType.Human)
                 {
-                    playerList.Add(new HumanPlayer(playerName, marker, _userInput, _output));
+                    playerList.Add(new HumanPlayer(playerName, marker, 0, _userInput, _output));
                 }
                 else if (type == PlayerType.BadComputer)
                 {
-                    playerList.Add(new BadComputerPlayer(playerName, marker));
+                    playerList.Add(new BadComputerPlayer(playerName, marker, 0));
                 }
                 else if (type == PlayerType.GoodComputer)
                 {
-                    playerList.Add(new GoodComputerPlayer(playerName, marker));
+                    playerList.Add(new GoodComputerPlayer(playerName, marker, 0));
                 }
             }
             return playerList;
@@ -113,6 +119,53 @@ namespace TicTacToe
                         break;
                 }
             }
+        }
+        
+        public GameState LoadPreviousGame()
+        {
+            var myBoard = File.ReadAllText(SavedBoardFilePath);
+            Board board = 
+                JsonSerializer.Deserialize<Board>(myBoard);
+
+            var myJsonString = File.ReadAllText(SavedGameStateFilePath);
+            var myJObject = JObject.Parse(myJsonString);
+
+            List<Player> playerList = new List<Player>();
+            
+            List<JProperty> properties = myJObject.Properties().ToList();
+
+            JProperty boardProperty = properties[0];
+            JProperty playerListProperty = properties[1];
+            JProperty currentPlayerProperty = properties[2];
+
+            for (int i = 0; i <= 1; i++)
+            {
+                string playerName = playerListProperty.Value[i]["Name"].ToString();
+                string playerMarker = playerListProperty.Value[i]["Marker"].ToString();
+                string playerScore = playerListProperty.Value[i]["Score"].ToString();
+                string playerType = playerListProperty.Value[i]["Type"].ToString();
+                PlayerType type = (PlayerType) Convert.ToInt16(playerType);
+
+                Player player;
+                switch (type)
+                {
+                    case PlayerType.GoodComputer:
+                        player = new GoodComputerPlayer(playerName, playerMarker, Convert.ToInt16(playerScore));
+                        break;
+                    case PlayerType.BadComputer:
+                        player = new BadComputerPlayer(playerName, playerMarker, Convert.ToInt16(playerScore));
+                        break;
+                    default:
+                        player = new HumanPlayer(playerName, playerMarker, Convert.ToInt16(playerScore), _userInput, _output);
+                        break;
+                }
+
+                _playerList.Add(player);
+            }
+            
+            Player currentPlayer = currentPlayerProperty.Name == _playerList[0].Name ?  _playerList[1] : _playerList[0];
+
+            return new GameState(board, currentPlayer, playerList, GameStatus.InPlay);
         }
     }
 }

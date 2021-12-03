@@ -6,8 +6,8 @@ namespace TicTacToe
     {
         private List<string> _listOfMoves;
         
-        public TestPlayer(string name, string marker, List<string> moves)
-            : base(name, marker)
+        public TestPlayer(string name, string marker, int score, PlayerType type, List<string> moves)
+            : base(name, marker, score, type)
         {
             _listOfMoves = moves;
         }

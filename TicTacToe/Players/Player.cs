@@ -1,3 +1,4 @@
+
 namespace TicTacToe
 {
     public abstract class Player
@@ -5,11 +6,14 @@ namespace TicTacToe
         public string Name { get; }
         public string Marker { get; }
         public int Score { get; set; }
-
-        public Player(string name, string marker)
+        public PlayerType Type { get; }
+        
+        public Player(string Name, string Marker, int score, PlayerType type)
         {
-            Name = name;
-            Marker = marker;
+            this.Name = Name;
+            this.Marker = Marker;
+            Score = score;
+            Type = type;
         }
 
         public void IncreaseScoreByOne()

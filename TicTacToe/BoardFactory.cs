@@ -13,7 +13,7 @@ namespace TicTacToe
                 )
                 .ToArray();
             
-            return new Board(board);
+            return new Board(board, sizeOfBoard);
         }
         
         public Board GenerateUpdatedBoard(string marker, Coordinates coordinates, Board board)
@@ -33,7 +33,7 @@ namespace TicTacToe
 
             updatedBoard[coordinates.GetRow()][coordinates.GetColumn()] = marker;
             
-            return new Board(updatedBoard);
+            return new Board(updatedBoard, sizeOfBoard);
         }
     }
 }

@@ -5,18 +5,18 @@ namespace TicTacToe
 {
     public class Board
     {
-        private string[][] _board;
+        public string[][] board { get; }
         public int SizeOfBoard { get; }
 
-        public Board(string[][] board)
+        public Board(string[][] board, int SizeOfBoard)
         {
-            SizeOfBoard = board[0].Length;
-            _board = board;
+            this.SizeOfBoard = SizeOfBoard;
+            this.board = board;
         }
         
         public string[] GetRow(int row)
         {
-            return _board[row];
+            return board[row];
         }
         
         public string[] GetColumn(int column)
@@ -25,7 +25,7 @@ namespace TicTacToe
             
             for(int row = 0; row < SizeOfBoard; row++)
             {
-                columnValues[row] = _board[row][column];
+                columnValues[row] = board[row][column];
             }
 
             return columnValues;
@@ -57,14 +57,14 @@ namespace TicTacToe
 
         public string GetPoint(int row, int column)
         {
-            return _board[row][column];
+            return board[row][column];
         }
 
         public int GetNumberOfFreeSpaces()
         {
             int numberOfFreeSpaces = 0;
             
-            foreach (var row in _board)
+            foreach (var row in board)
             {
                 numberOfFreeSpaces += row.Count(x => x == ".");
             }
@@ -80,7 +80,7 @@ namespace TicTacToe
             {
                 for (int j = 0; j < SizeOfBoard; j++)
                 {
-                    if (_board[i][j] == ".")
+                    if (board[i][j] == ".")
                     {
                         freeSpaces.Add(i + "," + j);
                     }

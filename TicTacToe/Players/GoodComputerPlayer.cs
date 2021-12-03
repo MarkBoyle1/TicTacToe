@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +6,11 @@ namespace TicTacToe
 {
     public class GoodComputerPlayer : Player
     {
-        public List<string> _movesList;
         private Random _random = new Random();
-        public GoodComputerPlayer(string name, string marker)
-            : base(name, marker)
+        
+        public GoodComputerPlayer(string name, string marker, int score)
+            : base(name, marker, score, PlayerType.GoodComputer)
         {
-            _movesList = new List<string>() {"2,2", "1,1", "1,3", "3,3", "1,3", "1,2", "2,1", "3,2", "2,3"};
-
         }
         
         public override string GetPlayerMove(Board board)
@@ -85,21 +82,20 @@ namespace TicTacToe
 
         private string GetNextMove(Board board)
         {
-            string middleSpace = null;
-
-            if (board.SizeOfBoard % 2 != 0)
-            {
-                middleSpace = (board.SizeOfBoard / 2) + "," + (board.SizeOfBoard / 2);
-            }
-            
             List<string> idealMoves = new List<string>()
             {
-                middleSpace,
                 "0,0",
                 "0," + (board.SizeOfBoard - 1),
                 (board.SizeOfBoard - 1) + ",0",
                 (board.SizeOfBoard - 1) + "," + (board.SizeOfBoard - 1)
             };
+
+            if (board.SizeOfBoard % 2 != 0)
+            {
+                string middleSpace = (board.SizeOfBoard / 2) + "," + (board.SizeOfBoard / 2);
+                idealMoves.Insert(0, middleSpace);
+            }
+            
             
             List<string> freeSpaces = board.GetAllFreeSpaces();
 

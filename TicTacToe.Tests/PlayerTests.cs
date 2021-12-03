@@ -20,7 +20,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
         {
-            Player player = new HumanPlayer("Player1", "x",new TestUserInput(new List<string>() {"1"}), new Output());
+            Player player = new HumanPlayer("Player1", "x", 0, new TestUserInput(new List<string>() {"1"}), new Output());
             
             player.IncreaseScoreByOne();
 
@@ -30,7 +30,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_winningMoveEqualsOneThree_when_GetCoordinate_then_return_OneThree()
         {
-            Player player = new GoodComputerPlayer("TestPlayer", "x");
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
             Board board = _boardFactory.GenerateInitialBoard(3);
 
@@ -45,7 +45,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_winningMoveEqualsOneOne_when_GetCoordinate_then_return_OneOne()
         {
-            Player player = new GoodComputerPlayer("TestPlayer", "x");
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
             Board board = _boardFactory.GenerateInitialBoard(3);
 
@@ -60,7 +60,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_winningMoveEqualsThreeThree_when_GetCoordinate_then_return_ThreeThree()
         {
-            Player player = new GoodComputerPlayer("TestPlayer", "x");
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
             Board board = _boardFactory.GenerateInitialBoard(3);
 
@@ -75,7 +75,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_boardIsEmpty_when_GetCoordinate_then_return_TwoTwo()
         {
-            Player player = new GoodComputerPlayer("TestPlayer", "x");
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
             Board board = _boardFactory.GenerateInitialBoard(3);
 

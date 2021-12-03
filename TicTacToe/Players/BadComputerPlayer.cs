@@ -6,9 +6,9 @@ namespace TicTacToe
     public class BadComputerPlayer : Player
     {
         private Random _random = new Random();
-
-        public BadComputerPlayer(string name, string marker)
-            : base(name, marker)
+        
+        public BadComputerPlayer(string name, string marker, int score)
+            : base(name, marker, score, PlayerType.BadComputer)
         {
         }
         
