@@ -8,9 +8,9 @@ namespace TicTacToe
         public string[][] board { get; }
         public int SizeOfBoard { get; }
 
-        public Board(string[][] board, int SizeOfBoard)
+        public Board(string[][] board, int sizeOfBoard)
         {
-            this.SizeOfBoard = SizeOfBoard;
+            SizeOfBoard = sizeOfBoard;
             this.board = board;
         }
         

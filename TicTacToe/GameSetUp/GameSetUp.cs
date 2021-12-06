@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using Newtonsoft.Json.Linq;
 
 namespace TicTacToe
@@ -13,7 +12,6 @@ namespace TicTacToe
         private IOutput _output;
         private IUserInput _userInput;
         private BoardFactory _boardFactory = new BoardFactory();
-        private const string SavedBoardFilePath = "SavedBoardFile.json";
         private const string SavedGameStateFilePath = "SavedFile.json";
 
         public GameSetUp(IUserInput userInput, IOutput output)
@@ -82,7 +80,7 @@ namespace TicTacToe
 
         public int GetSizeOfBoard()
         {
-            _output.DisplayMessage("Please enter the size of the board:");
+            _output.DisplayMessage(OutputMessages.EnterSizeOfBoard);
             string response = _userInput.GetUserInput();
             int boardSize = Convert.ToInt32(response);
             
@@ -123,20 +121,21 @@ namespace TicTacToe
         
         public GameState LoadPreviousGame()
         {
-            var myBoard = File.ReadAllText(SavedBoardFilePath);
-            Board board = 
-                JsonSerializer.Deserialize<Board>(myBoard);
-
             var myJsonString = File.ReadAllText(SavedGameStateFilePath);
             var myJObject = JObject.Parse(myJsonString);
-
-            List<Player> playerList = new List<Player>();
-            
             List<JProperty> properties = myJObject.Properties().ToList();
-
+            
             JProperty boardProperty = properties[0];
             JProperty playerListProperty = properties[1];
             JProperty currentPlayerProperty = properties[2];
+
+            Board board = new Board
+                (
+                    boardProperty.Value["board"].ToObject<string[][]>(), 
+                    boardProperty.Value["SizeOfBoard"].ToObject<int>()
+                );
+            
+            List<Player> playerList = new List<Player>();
 
             for (int i = 0; i <= 1; i++)
             {
@@ -160,10 +159,10 @@ namespace TicTacToe
                         break;
                 }
 
-                _playerList.Add(player);
+                playerList.Add(player);
             }
             
-            Player currentPlayer = currentPlayerProperty.Name == _playerList[0].Name ?  _playerList[1] : _playerList[0];
+            Player currentPlayer = currentPlayerProperty.Name == playerList[0].Name ?  playerList[1] : playerList[0];
 
             return new GameState(board, currentPlayer, playerList, GameStatus.InPlay);
         }

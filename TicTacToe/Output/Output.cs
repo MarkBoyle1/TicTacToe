@@ -23,7 +23,7 @@ namespace TicTacToe
 
         public void DisplayScores(List<Player> playerList)
         {
-            Console.WriteLine("Current Scores:");
+            Console.WriteLine(OutputMessages.CurrentScores);
             Console.WriteLine(playerList[0].Name + ": " + playerList[0].Score);
             Console.WriteLine(playerList[1].Name + ": " + playerList[1].Score);
         }
