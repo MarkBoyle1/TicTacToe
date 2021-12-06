@@ -4,12 +4,12 @@ namespace TicTacToe
 {
     public class BoardFactory
     {
-        public Board GenerateInitialBoard(int sizeOfBoard)
+        public Board GenerateEmptyBoard(int sizeOfBoard)
         {
             string[][] board = new string[sizeOfBoard][];
             board = board.Select
                 (
-                    x => new string[sizeOfBoard].Select(x => ".").ToArray()
+                    x => new string[sizeOfBoard].Select(x => Constants.FreeSpace).ToArray()
                 )
                 .ToArray();
             

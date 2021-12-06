@@ -10,7 +10,7 @@ namespace TicTacToe
 
         public TestGameSetUp(BoardFactory boardFactory, int sizeOfBoard, List<Player> playerList)
         {
-            _board = boardFactory.GenerateInitialBoard(sizeOfBoard);
+            _board = boardFactory.GenerateEmptyBoard(sizeOfBoard);
             _playerList = playerList;
             _currentPlayer = playerList[0];
         }
@@ -20,7 +20,7 @@ namespace TicTacToe
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
 
-        public GameState LoadPreviousGame()
+        public GameState LoadPreviousGame(string filePath)
         {
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }

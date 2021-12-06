@@ -28,5 +28,35 @@ namespace TicTacToe.Tests
 
             Assert.Equal(3, gameSetUp.GetSizeOfBoard());
         }
+        
+        [Fact]
+        public void given_testSavedGameStateContainsSizeOfGridEqualsThree_when_LoadPreviousGame_then_sizeOfGridEqualsThree()
+        {
+            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
+
+            GameState gamestate = gameSetUp.LoadPreviousGame("../../../TestSavedGameState.json");
+
+            Assert.Equal(3, gamestate.Board.SizeOfBoard);
+        }
+        
+        [Fact]
+        public void given_testSavedGameStateContainsCurrentPlayerEqualsPlayer2_when_LoadPreviousGame_then_currentPlayerEqualsPlayer2()
+        {
+            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
+
+            GameState gamestate = gameSetUp.LoadPreviousGame("../../../TestSavedGameState.json");
+
+            Assert.Equal("Player2", gamestate.CurrentPlayer.Name);
+        }
+        
+        [Fact]
+        public void given_testSavedGameStateContainsBoardWithPointZeroZeroAsO_when_LoadPreviousGame_then_BoardZeroZeroEqualsO()
+        {
+            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
+
+            GameState gamestate = gameSetUp.LoadPreviousGame("../../../TestSavedGameState.json");
+
+            Assert.Equal("o", gamestate.Board.GetPoint(0,0));
+        }
     }
 }

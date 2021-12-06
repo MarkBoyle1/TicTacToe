@@ -66,7 +66,7 @@ namespace TicTacToe
             
             foreach (var row in board)
             {
-                numberOfFreeSpaces += row.Count(x => x == ".");
+                numberOfFreeSpaces += row.Count(x => x == Constants.FreeSpace);
             }
 
             return numberOfFreeSpaces;
@@ -80,7 +80,7 @@ namespace TicTacToe
             {
                 for (int j = 0; j < SizeOfBoard; j++)
                 {
-                    if (board[i][j] == ".")
+                    if (board[i][j] == Constants.FreeSpace)
                     {
                         freeSpaces.Add(i + "," + j);
                     }

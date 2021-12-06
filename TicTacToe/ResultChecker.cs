@@ -28,7 +28,7 @@ namespace TicTacToe
         {
             for (int row = 0; row < board.SizeOfBoard; row++)
             {
-                if (board.GetRow(row).Distinct().Count() == 1 && !board.GetRow(row).Contains("."))
+                if (board.GetRow(row).Distinct().Count() == 1 && !board.GetRow(row).Contains(Constants.FreeSpace))
                 {
                     return true;
                 }
@@ -41,7 +41,7 @@ namespace TicTacToe
         {
             for(int column = 0; column < board.SizeOfBoard; column++)
             {
-                if (board.GetColumn(column).Distinct().Count() == 1 && !board.GetColumn(column).Contains("."))
+                if (board.GetColumn(column).Distinct().Count() == 1 && !board.GetColumn(column).Contains(Constants.FreeSpace))
                 {
                     return true;
                 }
@@ -54,7 +54,7 @@ namespace TicTacToe
         {
             string[] diagonalSlopeRight = board.GetDiangonalTopLeftToBottomRight();
 
-            return diagonalSlopeRight.Distinct().Count() == 1 && !diagonalSlopeRight.Contains(".");
+            return diagonalSlopeRight.Distinct().Count() == 1 && !diagonalSlopeRight.Contains(Constants.FreeSpace);
             
         }
         
@@ -62,7 +62,7 @@ namespace TicTacToe
         {
             string[] diagonalSlopeLeft = board.GetDiangonalTopRightToBottomLeft();
 
-            return diagonalSlopeLeft.Distinct().Count() == 1 && !diagonalSlopeLeft.Contains(".");
+            return diagonalSlopeLeft.Distinct().Count() == 1 && !diagonalSlopeLeft.Contains(Constants.FreeSpace);
         }
         
         public bool CheckForDraw(Board board)

@@ -16,12 +16,6 @@ namespace TicTacToe
         private BoardFactory _boardFactory;
         private GameState _gameState;
         private IGameSetUp _gameSetUp;
-        private const string Quit = "q";
-        private const string Save = "s";
-        private const string Yes = "y";
-        private const string No = "n";
-        private const string SavedBoardFilePath = "SavedBoardFile.json";
-        private const string SavedGameStateFilePath = "SavedFile.json";
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
@@ -34,14 +28,6 @@ namespace TicTacToe
         
         public GameState RunProgram()
         {
-            _output.DisplayMessage(OutputMessages.WelcomeMessage);
-            _output.DisplayMessage(OutputMessages.NewOrPreviousGame);
-            string response = _input.GetUserInput();
-
-            _gameState = response == Yes 
-                ? _gameSetUp.LoadPreviousGame() 
-                : _gameSetUp.SetUpNewGame();
-
             SetUpInitialGame();
             
             _gameState = PlayOneRound();
@@ -57,6 +43,14 @@ namespace TicTacToe
 
         public void SetUpInitialGame()
         {
+            _output.DisplayMessage(OutputMessages.WelcomeMessage);
+            _output.DisplayMessage(OutputMessages.NewOrPreviousGame);
+            string response = _input.GetUserInput();
+
+            _gameState = response == Constants.Yes 
+                ? _gameSetUp.LoadPreviousGame(Constants.SavedGameStateFilePath) 
+                : _gameSetUp.SetUpNewGame();
+
             _playerList = _gameState.PlayerList;
             _currentPlayer = _gameState.CurrentPlayer;
             _board = _gameState.Board;
@@ -88,12 +82,12 @@ namespace TicTacToe
             _output.DisplayMessage(_currentPlayer.Name + OutputMessages.EnterNextMove);
             string input = _currentPlayer.GetPlayerMove(_board);
 
-            if (input == Quit)
+            if (input == Constants.Quit)
             {
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
 
-            if (input == Save)
+            if (input == Constants.Save)
             {
                 SaveGameState();
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Saved);
@@ -142,18 +136,18 @@ namespace TicTacToe
             _output.DisplayMessage(OutputMessages.PlayAnotherGameQuestion);
             string response = _input.GetUserInput();
 
-            while (response != Yes && response != No)
+            while (response != Constants.Yes && response != Constants.No)
             {
                 _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _input.GetUserInput();
             }
 
-            return response == Yes;
+            return response == Constants.Yes;
         }
 
         private GameState ResetGameState()
         {
-            _board = _boardFactory.GenerateInitialBoard(_board.SizeOfBoard);
+            _board = _boardFactory.GenerateEmptyBoard(_board.SizeOfBoard);
             _currentPlayer = SwapPlayers(_currentPlayer);
             
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
@@ -162,10 +156,7 @@ namespace TicTacToe
         private void SaveGameState()
         {
             string gameStateJsonString = JsonSerializer.Serialize(_gameState);
-            File.WriteAllText(SavedGameStateFilePath, gameStateJsonString);
-            
-            string boardJsonString = JsonSerializer.Serialize(_board);
-            File.WriteAllText(SavedBoardFilePath, boardJsonString);
+            File.WriteAllText(Constants.SavedGameStateFilePath, gameStateJsonString);
         }
     }
 }

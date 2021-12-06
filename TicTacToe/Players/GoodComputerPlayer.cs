@@ -29,9 +29,9 @@ namespace TicTacToe
             for(int column = 0; column < board.SizeOfBoard; column++)
             {
                 string[] columnArray = board.GetColumn(column);
-                if (columnArray.Distinct().Count() == 2 && columnArray.Count(x => x == ".") == 1)
+                if (columnArray.Distinct().Count() == 2 && columnArray.Count(x => x == Constants.FreeSpace) == 1)
                 {
-                    int indexOfFreeSpace = Array.IndexOf(columnArray, ".");
+                    int indexOfFreeSpace = Array.IndexOf(columnArray, Constants.FreeSpace);
                     return indexOfFreeSpace + "," + (column);
                 }
             }
@@ -44,9 +44,9 @@ namespace TicTacToe
             for(int row = 0; row < board.SizeOfBoard; row++)
             {
                 string[] rowArray = board.GetRow(row);
-                if (rowArray.Distinct().Count() == 2 && rowArray.Count(x => x == ".") == 1)
+                if (rowArray.Distinct().Count() == 2 && rowArray.Count(x => x == Constants.FreeSpace) == 1)
                 {
-                    int indexOfFreeSpace = Array.IndexOf(rowArray, ".");
+                    int indexOfFreeSpace = Array.IndexOf(rowArray, Constants.FreeSpace);
                     return (row) + "," + indexOfFreeSpace;
                 }
             }
@@ -58,9 +58,9 @@ namespace TicTacToe
         {
             string[] diagonalSlopeRight = board.GetDiangonalTopLeftToBottomRight();
 
-            if (diagonalSlopeRight.Distinct().Count() == 2 && diagonalSlopeRight.Count(x => x == ".") == 1)
+            if (diagonalSlopeRight.Distinct().Count() == 2 && diagonalSlopeRight.Count(x => x == Constants.FreeSpace) == 1)
             {
-                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeRight, ".");
+                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeRight, Constants.FreeSpace);
                 return indexOfFreeSpace + "," + indexOfFreeSpace;
             }
             
@@ -71,9 +71,9 @@ namespace TicTacToe
         {
             string[] diagonalSlopeLeft = board.GetDiangonalTopRightToBottomLeft();
 
-            if (diagonalSlopeLeft.Distinct().Count() == 2 && diagonalSlopeLeft.Count(x => x == ".") == 1)
+            if (diagonalSlopeLeft.Distinct().Count() == 2 && diagonalSlopeLeft.Count(x => x == Constants.FreeSpace) == 1)
             {
-                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeLeft, ".");
+                int indexOfFreeSpace = Array.IndexOf(diagonalSlopeLeft, Constants.FreeSpace);
                 return indexOfFreeSpace + "," + (board.SizeOfBoard - 1 - indexOfFreeSpace);
             }
             
@@ -95,8 +95,7 @@ namespace TicTacToe
                 string middleSpace = (board.SizeOfBoard / 2) + "," + (board.SizeOfBoard / 2);
                 idealMoves.Insert(0, middleSpace);
             }
-            
-            
+
             List<string> freeSpaces = board.GetAllFreeSpaces();
 
             foreach (var move in idealMoves)

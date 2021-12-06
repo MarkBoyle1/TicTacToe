@@ -16,11 +16,11 @@ namespace TicTacToe
         
         public override string GetPlayerMove(Board board)
         {
-            List<string> freeSpaces = board.GetAllFreeSpaces();
-
             string response = _input.GetUserInput();
             
-            while (!freeSpaces.Contains(response) && response != "q" && response != "s")
+            List<string> freeSpaces = board.GetAllFreeSpaces();
+            
+            while (!freeSpaces.Contains(response) && response != Constants.Quit && response != Constants.Save)
             {
                 _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _input.GetUserInput();

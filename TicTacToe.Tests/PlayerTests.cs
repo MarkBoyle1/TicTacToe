@@ -32,7 +32,7 @@ namespace TicTacToe.Tests
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
-            Board board = _boardFactory.GenerateInitialBoard(3);
+            Board board = _boardFactory.GenerateEmptyBoard(3);
 
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,0), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,0), updatedBoard);
@@ -47,7 +47,7 @@ namespace TicTacToe.Tests
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
-            Board board = _boardFactory.GenerateInitialBoard(3);
+            Board board = _boardFactory.GenerateEmptyBoard(3);
 
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,1), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,2), updatedBoard);
@@ -62,7 +62,7 @@ namespace TicTacToe.Tests
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
-            Board board = _boardFactory.GenerateInitialBoard(3);
+            Board board = _boardFactory.GenerateEmptyBoard(3);
 
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,0), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,1), updatedBoard);
@@ -77,7 +77,7 @@ namespace TicTacToe.Tests
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
-            Board board = _boardFactory.GenerateInitialBoard(3);
+            Board board = _boardFactory.GenerateEmptyBoard(3);
 
             string computerMove = player.GetPlayerMove(board);
             

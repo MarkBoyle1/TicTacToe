@@ -12,7 +12,6 @@ namespace TicTacToe
         private IOutput _output;
         private IUserInput _userInput;
         private BoardFactory _boardFactory = new BoardFactory();
-        private const string SavedGameStateFilePath = "SavedFile.json";
 
         public GameSetUp(IUserInput userInput, IOutput output)
         {
@@ -25,7 +24,7 @@ namespace TicTacToe
             _playerList = CreatePlayerList();
             Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
             int sizeOfBoard = GetSizeOfBoard();
-            Board board = _boardFactory.GenerateInitialBoard(sizeOfBoard);
+            Board board = _boardFactory.GenerateEmptyBoard(sizeOfBoard);
 
             return new GameState(board, currentPlayer, _playerList, GameStatus.InPlay);
         }
@@ -119,9 +118,9 @@ namespace TicTacToe
             }
         }
         
-        public GameState LoadPreviousGame()
+        public GameState LoadPreviousGame(string filePath)
         {
-            var myJsonString = File.ReadAllText(SavedGameStateFilePath);
+            var myJsonString = File.ReadAllText(filePath);
             var myJObject = JObject.Parse(myJsonString);
             List<JProperty> properties = myJObject.Properties().ToList();
             
@@ -131,18 +130,18 @@ namespace TicTacToe
 
             Board board = new Board
                 (
-                    boardProperty.Value["board"].ToObject<string[][]>(), 
-                    boardProperty.Value["SizeOfBoard"].ToObject<int>()
+                    boardProperty.Value[Constants.Board].ToObject<string[][]>(), 
+                    boardProperty.Value[Constants.SizeOfBoard].ToObject<int>()
                 );
             
             List<Player> playerList = new List<Player>();
 
             for (int i = 0; i <= 1; i++)
             {
-                string playerName = playerListProperty.Value[i]["Name"].ToString();
-                string playerMarker = playerListProperty.Value[i]["Marker"].ToString();
-                string playerScore = playerListProperty.Value[i]["Score"].ToString();
-                string playerType = playerListProperty.Value[i]["Type"].ToString();
+                string playerName = playerListProperty.Value[i][Constants.Name].ToString();
+                string playerMarker = playerListProperty.Value[i][Constants.Marker].ToString();
+                string playerScore = playerListProperty.Value[i][Constants.Score].ToString();
+                string playerType = playerListProperty.Value[i][Constants.Type].ToString();
                 PlayerType type = (PlayerType) Convert.ToInt16(playerType);
 
                 Player player;
@@ -162,7 +161,7 @@ namespace TicTacToe
                 playerList.Add(player);
             }
             
-            Player currentPlayer = currentPlayerProperty.Name == playerList[0].Name ?  playerList[1] : playerList[0];
+            Player currentPlayer = currentPlayerProperty.Name == playerList[0].Name ?  playerList[0] : playerList[1];
 
             return new GameState(board, currentPlayer, playerList, GameStatus.InPlay);
         }
