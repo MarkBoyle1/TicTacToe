@@ -11,15 +11,37 @@ namespace TicTacToe
         private List<Player> _playerList;
         private IOutput _output;
         private IUserInput _userInput;
-        private BoardFactory _boardFactory = new BoardFactory();
+        private BoardFactory _boardFactory;
+        private string _filePath;
 
-        public GameSetUp(IUserInput userInput, IOutput output)
+        public GameSetUp(IUserInput userInput, IOutput output, string filePath)
         {
             _userInput = userInput;
             _output = output;
+            _boardFactory = new BoardFactory();
+            _filePath = filePath;
+        }
+        
+        public GameState GetInitialGameState()
+        {
+            _output.DisplayMessage(OutputMessages.WelcomeMessage);
+            _output.DisplayMessage(OutputMessages.NewOrPreviousGame);
+            string response = _userInput.GetUserInput();
+
+            while (response != Constants.Yes && response != Constants.No)
+            {
+                _output.DisplayMessage(OutputMessages.InvalidInput);
+                response = _userInput.GetUserInput();
+            }
+
+            GameState gameState = response == Constants.Yes 
+                ? LoadPreviousGame() 
+                : SetUpNewGame();
+
+            return gameState;
         }
 
-        public GameState SetUpNewGame()
+        private GameState SetUpNewGame()
         {
             _playerList = CreatePlayerList();
             Player currentPlayer = ChoosePlayerToGoFirst(_playerList);
@@ -29,7 +51,7 @@ namespace TicTacToe
             return new GameState(board, currentPlayer, _playerList, GameStatus.InPlay);
         }
 
-        public List<Player> CreatePlayerList()
+        private List<Player> CreatePlayerList()
         {
             List<Player> playerList = new List<Player>();
 
@@ -41,7 +63,7 @@ namespace TicTacToe
 
                 if (type == PlayerType.Human)
                 {
-                    playerList.Add(new HumanPlayer(playerName, marker, 0, _userInput, _output));
+                    playerList.Add(new HumanPlayer(playerName, marker, 0, _userInput));
                 }
                 else if (type == PlayerType.BadComputer)
                 {
@@ -55,17 +77,34 @@ namespace TicTacToe
             return playerList;
         }
 
-        public string GetPlayerMarker(string playerName)
+        private string GetPlayerMarker(string playerName)
         {
-            _output.DisplayMessage(OutputMessages.EnterMarkerForPlayer + $"{playerName}:");
-            return _userInput.GetUserInput();
+            List<string> usedMarker = new List<string>();
+
+            if (usedMarker.Count > 0)
+            {
+                return usedMarker[0] == Constants.XMarker ? Constants.OMarker : Constants.XMarker;
+            }
+            
+            _output.DisplayMessage(OutputMessages.EnterMarkerForPlayer + $" {playerName}:");
+            string marker = _userInput.GetUserInput();
+
+            while (marker != Constants.XMarker && marker != Constants.OMarker)
+            {
+                _output.DisplayMessage(OutputMessages.InvalidInput);
+                marker = _userInput.GetUserInput();
+            }
+
+            usedMarker.Add(marker);
+            return marker;
         }
 
-        public Player ChoosePlayerToGoFirst(List<Player> playerList)
+        private Player ChoosePlayerToGoFirst(List<Player> playerList)
         {
             _output.DisplayMessage(OutputMessages.WhichPlayerGoesFirst);
             string response = _userInput.GetUserInput();
-            int playerNumber = Convert.ToInt32(response);
+
+            int playerNumber = ConvertInputToNumber(response);
 
             while (playerNumber < 1 || playerNumber > 2)
             {
@@ -77,13 +116,14 @@ namespace TicTacToe
             return playerList[playerNumber - 1];
         }
 
-        public int GetSizeOfBoard()
+        private int GetSizeOfBoard()
         {
             _output.DisplayMessage(OutputMessages.EnterSizeOfBoard);
             string response = _userInput.GetUserInput();
-            int boardSize = Convert.ToInt32(response);
+
+            int boardSize = ConvertInputToNumber(response);
             
-            while (boardSize < 1 || boardSize > 10)
+            while (boardSize < 1)
             {
                 _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _userInput.GetUserInput();
@@ -93,23 +133,34 @@ namespace TicTacToe
             return boardSize;
         }
 
+        private int ConvertInputToNumber(string response)
+        {
+            int number = 0;
+
+            while (!int.TryParse(response, out number))
+            {
+                _output.DisplayMessage(OutputMessages.InvalidInput);
+                response = _userInput.GetUserInput();
+            }
+            
+            return Convert.ToInt32(response);
+        }
+
         private PlayerType GetPlayerType(string playerName)
         {
-            _output.DisplayMessage($"Please enter the player type for {playerName} " +
-                                   $"(0 = Human, " +
-                                   $"1 = Bad Computer Player, " +
-                                   $"2 = Good Computer Player):");
+            _output.DisplayMessage(OutputMessages.GivePlayerTypeOptions(playerName));
+
             while (true)
             {
                 string response = _userInput.GetUserInput();
-
+                
                 switch (response)
                 {
-                    case "0":
+                    case Constants.InputForHumanPlayer:
                         return PlayerType.Human;
-                    case "1":
+                    case Constants.InputForBadComputerPlayer:
                         return PlayerType.BadComputer;
-                    case "2":
+                    case Constants.InputForGoodComputerPlayer:
                         return PlayerType.GoodComputer;
                     default:
                         _output.DisplayMessage(OutputMessages.InvalidInput);
@@ -118,9 +169,9 @@ namespace TicTacToe
             }
         }
         
-        public GameState LoadPreviousGame(string filePath)
+        private GameState LoadPreviousGame()
         {
-            var myJsonString = File.ReadAllText(filePath);
+            var myJsonString = File.ReadAllText(_filePath);
             var myJObject = JObject.Parse(myJsonString);
             List<JProperty> properties = myJObject.Properties().ToList();
             
@@ -154,7 +205,7 @@ namespace TicTacToe
                         player = new BadComputerPlayer(playerName, playerMarker, Convert.ToInt16(playerScore));
                         break;
                     default:
-                        player = new HumanPlayer(playerName, playerMarker, Convert.ToInt16(playerScore), _userInput, _output);
+                        player = new HumanPlayer(playerName, playerMarker, Convert.ToInt16(playerScore), _userInput);
                         break;
                 }
 

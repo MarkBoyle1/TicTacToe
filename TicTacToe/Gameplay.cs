@@ -28,7 +28,11 @@ namespace TicTacToe
         
         public GameState RunProgram()
         {
-            SetUpInitialGame();
+            _gameState = _gameSetUp.GetInitialGameState();
+            
+            _playerList = _gameState.PlayerList;
+            _currentPlayer = _gameState.CurrentPlayer;
+            _board = _gameState.Board;
             
             _gameState = PlayOneRound();
 
@@ -41,21 +45,6 @@ namespace TicTacToe
             return _gameState;
         }
 
-        public void SetUpInitialGame()
-        {
-            _output.DisplayMessage(OutputMessages.WelcomeMessage);
-            _output.DisplayMessage(OutputMessages.NewOrPreviousGame);
-            string response = _input.GetUserInput();
-
-            _gameState = response == Constants.Yes 
-                ? _gameSetUp.LoadPreviousGame(Constants.SavedGameStateFilePath) 
-                : _gameSetUp.SetUpNewGame();
-
-            _playerList = _gameState.PlayerList;
-            _currentPlayer = _gameState.CurrentPlayer;
-            _board = _gameState.Board;
-        }
-        
         public GameState PlayOneRound()
         {
             _gameState = PlayTurn();
@@ -81,6 +70,14 @@ namespace TicTacToe
 
             _output.DisplayMessage(_currentPlayer.Name + OutputMessages.EnterNextMove);
             string input = _currentPlayer.GetPlayerMove(_board);
+            
+            List<string> freeSpaces = _board.GetAllFreeSpaces();
+            
+            while (!freeSpaces.Contains(input) && input != Constants.Quit && input != Constants.Save)
+            {
+                _output.DisplayMessage(OutputMessages.InvalidInput);
+                input = _currentPlayer.GetPlayerMove(_board);
+            }
 
             if (input == Constants.Quit)
             {

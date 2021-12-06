@@ -15,14 +15,10 @@ namespace TicTacToe
             _currentPlayer = playerList[0];
         }
 
-        public GameState SetUpNewGame()
+        public GameState GetInitialGameState()
         {
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
-
-        public GameState LoadPreviousGame(string filePath)
-        {
-            return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
-        }
+            
     }
 }

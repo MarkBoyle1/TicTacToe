@@ -8,8 +8,17 @@ namespace TicTacToe
         public const string InvalidInput = "Invalid input. Please try again:";
         public const string PlayAnotherGameQuestion = "Would you like to play another game? y/n:";
         public const string WhichPlayerGoesFirst = "Which player will go first (enter 1 or 2):";
-        public const string EnterMarkerForPlayer = "Please enter the marker for";
+        public const string EnterMarkerForPlayer = "Please enter the marker (x or o) for";
         public const string NewOrPreviousGame = "Would you like to load the previous game? y/n:";
         public const string CurrentScores = "Current Scores:";
+
+        public static string GivePlayerTypeOptions(string playerName)
+        {
+            return $"Please enter the player type for {playerName} " +
+                   $"(0 = Human, " +
+                   $"1 = Bad Computer Player, " +
+                   $"2 = Good Computer Player):";
+        }
+            
     }
 }

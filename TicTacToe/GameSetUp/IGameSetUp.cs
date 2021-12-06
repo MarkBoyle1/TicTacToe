@@ -2,7 +2,6 @@ namespace TicTacToe
 {
     public interface IGameSetUp
     {
-        GameState SetUpNewGame();
-        GameState LoadPreviousGame(string filePath);
+        GameState GetInitialGameState();
     }
 }

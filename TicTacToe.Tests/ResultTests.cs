@@ -116,6 +116,24 @@ namespace TicTacToe.Tests
         }
         
         [Fact]
+        public void given_boardIsFullWithNoWinner_when_CheckResults_then_return_Draw()
+        {
+            Board board = _boardFactory.GenerateEmptyBoard(3);
+
+            Board updatedBoard = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(0, 0), board);
+            Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0, 1), updatedBoard);
+            Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(0, 2), updatedBoard1);
+            Board updatedBoard3 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1, 0), updatedBoard2);
+            Board updatedBoard4 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1, 1), updatedBoard3);
+            Board updatedBoard5 = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(1, 2), updatedBoard4);
+            Board updatedBoard6 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(2, 0), updatedBoard5);
+            Board updatedBoard7 = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(2, 1), updatedBoard6);
+            Board updatedBoard8 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(2, 2), updatedBoard7);
+
+            Assert.Equal(GameStatus.Draw,_result.CheckResults(updatedBoard8));
+        }
+        
+        [Fact]
         public void given_sizeOfGridEquals5_and_diagonalSlopingLeftIsComplete_when_CheckResults_then_return_Win()
         {
             Coordinates coordinates1 = new Coordinates(0, 4);
@@ -133,6 +151,24 @@ namespace TicTacToe.Tests
             Board updatedBoard4 = _boardFactory.GenerateUpdatedBoard("x", coordinates5, updatedBoard3);
             
             Assert.Equal(GameStatus.Win,_result.CheckResults(updatedBoard4));
+        }
+        
+        [Fact]
+        public void given_sizeOfGridEquals5_and_diagonalSlopingLeftIsNotComplete_when_CheckResults_then_return_InPlay()
+        {
+            Coordinates coordinates1 = new Coordinates(0, 4);
+            Coordinates coordinates2 = new Coordinates(1, 3);
+            Coordinates coordinates3 = new Coordinates(2, 2);
+            Coordinates coordinates4 = new Coordinates(3, 1);
+
+            Board board = _boardFactory.GenerateEmptyBoard(5);
+
+            Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", coordinates1, board);
+            Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", coordinates2, updatedBoard);
+            Board updatedBoard2 = _boardFactory.GenerateUpdatedBoard("x", coordinates3, updatedBoard1);
+            Board updatedBoard3 = _boardFactory.GenerateUpdatedBoard("x", coordinates4, updatedBoard2);
+
+            Assert.Equal(GameStatus.InPlay,_result.CheckResults(updatedBoard3));
         }
     }
 }

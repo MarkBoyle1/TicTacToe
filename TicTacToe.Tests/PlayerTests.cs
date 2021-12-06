@@ -9,26 +9,7 @@ namespace TicTacToe.Tests
         private BoardFactory _boardFactory = new BoardFactory();
         
         [Fact]
-        public void given_userInputEqualsX_when_GetPlayerMarker_then_PlayerMarkerEqualsX()
-        {
-            List<string> testInput = new List<string>() {"x"};
-            GameSetUp _gameSetUp = new GameSetUp(new TestUserInput(testInput), new Output());
-
-            Assert.Equal("x", _gameSetUp.GetPlayerMarker("Player1"));
-        }
-        
-        [Fact]
-        public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
-        {
-            Player player = new HumanPlayer("Player1", "x", 0, new TestUserInput(new List<string>() {"1"}), new Output());
-            
-            player.IncreaseScoreByOne();
-
-            Assert.Equal(1, player.Score);
-        }
-
-        [Fact]
-        public void given_winningMoveEqualsOneThree_when_GetCoordinate_then_return_OneThree()
+        public void given_winningMoveEqualsTwoZeroOnAColumn_when_GetPlayerMove_then_return_TwoZero()
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
@@ -43,7 +24,7 @@ namespace TicTacToe.Tests
         }
         
         [Fact]
-        public void given_winningMoveEqualsOneOne_when_GetCoordinate_then_return_OneOne()
+        public void given_winningMoveEqualsZeroZeroOnARow_when_GetPlayerMove_then_return_ZeroZero()
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
@@ -58,7 +39,7 @@ namespace TicTacToe.Tests
         }
         
         [Fact]
-        public void given_winningMoveEqualsThreeThree_when_GetCoordinate_then_return_ThreeThree()
+        public void given_winningMoveEqualsTwoTwoOnDiagonalSlopingRight_when_GetPlayerMove_then_return_TwoTwo()
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             
@@ -73,7 +54,51 @@ namespace TicTacToe.Tests
         }
         
         [Fact]
-        public void given_boardIsEmpty_when_GetCoordinate_then_return_TwoTwo()
+        public void given_winningMoveEqualsTwoZeroOnDiagonalSlopingLeft_when_GetPlayerMove_then_return_TwoZero()
+        {
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
+            
+            Board board = _boardFactory.GenerateEmptyBoard(3);
+
+            Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,2), board);
+            Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,1), updatedBoard);
+
+            string computerMove = player.GetPlayerMove(updatedBoard1);
+            
+            Assert.Equal("2,0", computerMove);
+        }
+        
+        [Fact]
+        public void given_defendingMoveEqualsTwoZeroOnDiagonalSlopingLeft_when_GetPlayerMove_then_return_TwoZero()
+        {
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
+            
+            Board board = _boardFactory.GenerateEmptyBoard(3);
+
+            Board updatedBoard = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(0,2), board);
+            Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(1,1), updatedBoard);
+
+            string computerMove = player.GetPlayerMove(updatedBoard1);
+            
+            Assert.Equal("2,0", computerMove);
+        }
+        
+        [Fact]
+        public void given_givenCornerIsFreeAndNoDefendingMovesRequired_when_GetPlayerMove_then_return_ZeroZero()
+        {
+            Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
+            
+            Board board = _boardFactory.GenerateEmptyBoard(3);
+
+            Board updatedBoard = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(1,1), board);
+            
+            string computerMove = player.GetPlayerMove(updatedBoard);
+            
+            Assert.Equal("0,0", computerMove);
+        }
+        
+        [Fact]
+        public void given_boardIsEmpty_when_GetPlayerMove_then_return_OneOne()
         {
             Player player = new GoodComputerPlayer("TestPlayer", "x", 0);
             

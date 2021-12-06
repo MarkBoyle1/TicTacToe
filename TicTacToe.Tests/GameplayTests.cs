@@ -71,6 +71,16 @@ namespace TicTacToe.Tests
         }
         
         [Fact]
+        public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
+        {
+            Player player = new HumanPlayer("Player1", "x", 0, new TestUserInput(new List<string>() {"1"}));
+            
+            player.IncreaseScoreByOne();
+
+            Assert.Equal(1, player.Score);
+        }
+        
+        [Fact]
         public void given_twoGamesArePlayed_when_RunProgram_then_PlayerOnesScoreEquals2()
         {
             List<string> listOfMovesX = new List<string>() {"0,0", "1,0", "2,0", "0,1", "1,1", "2,1"};
@@ -84,7 +94,7 @@ namespace TicTacToe.Tests
             };
             
             IGameSetUp _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
-            Gameplay gameplayTwoGames = new Gameplay(new TestUserInput(new List<string>() {"n", "y", "n"}), new Output(), _defaultGameSetUp);
+            Gameplay gameplayTwoGames = new Gameplay(new TestUserInput(new List<string>() {"y", "n"}), new Output(), _defaultGameSetUp);
             
             GameState gameState = gameplayTwoGames.RunProgram();
             

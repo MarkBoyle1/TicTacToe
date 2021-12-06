@@ -6,11 +6,12 @@ namespace TicTacToe
 {
     public class GoodComputerPlayer : Player
     {
-        private Random _random = new Random();
+        private Random _random;
         
         public GoodComputerPlayer(string name, string marker, int score)
             : base(name, marker, score, PlayerType.GoodComputer)
         {
+            _random = new Random();
         }
         
         public override string GetPlayerMove(Board board)

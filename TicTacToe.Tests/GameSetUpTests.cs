@@ -5,36 +5,72 @@ namespace TicTacToe.Tests
 {
     public class GameSetUpTests
     {
-        [Fact]
-        public void given_userInputEquals1_when_ChoosePlayerToGoFirst_then_currentPlayerEqualsPlayer1()
+        private GameSetUp _defaultGameSetUpForNewGame;
+        private List<string> _defaultNewGameInput;
+        private GameSetUp _defaultGameSetUpForLoadedGame;
+        private List<string> _defaultLoadedGameInput;
+
+        public GameSetUpTests()
         {
-            List<string> testInput = new List<string>() {"1"};
-            GameSetUp gameSetUp = new GameSetUp(new TestUserInput(testInput), new Output());
-            List<Player> playerList = new List<Player>()
-            {
-                new HumanPlayer("Player1", "x", 0, new TestUserInput(testInput), new Output()),
-                new HumanPlayer("Player2", "o", 0, new TestUserInput(testInput), new Output()),
-            };
-            Player currentPlayer = gameSetUp.ChoosePlayerToGoFirst(playerList);
+            _defaultNewGameInput = new List<string>(){"n", "x", "0", "o", "2", "1", "3"};
+            _defaultGameSetUpForNewGame = new GameSetUp(new TestUserInput(_defaultNewGameInput), new Output(), "../../../TestSavedGameState.json");
             
-            Assert.Equal("Player1", currentPlayer.Name);
+            _defaultLoadedGameInput = new List<string>(){"y"};
+            _defaultGameSetUpForLoadedGame = new GameSetUp(new TestUserInput(_defaultLoadedGameInput), new Output(), "../../../TestSavedGameState.json");
         }
         
         [Fact]
-        public void given_userInputEquals3_when_GetSizeOfBoard_then_return_3()
+        public void given_userInputEqualsX_when_AskedForPlayerMarker_then_PlayerMarkerEqualsX()
         {
-            List<string> testInput = new List<string>() {"3"};
-            GameSetUp gameSetUp = new GameSetUp(new TestUserInput(testInput), new Output());
+            GameState gameState = _defaultGameSetUpForNewGame.GetInitialGameState();
 
-            Assert.Equal(3, gameSetUp.GetSizeOfBoard());
+            Assert.Equal("x", gameState.PlayerList[0].Marker);
+        }
+        
+        [Fact]
+        public void given_userInputEquals0_when_AskedForPlayerType_then_PlayerTypeEqualsHuman()
+        {
+            GameState gameState = _defaultGameSetUpForNewGame.GetInitialGameState();
+
+            Assert.Equal(PlayerType.Human, gameState.PlayerList[0].Type);
+        }
+        
+        [Fact]
+        public void given_userInputEqualsO_when_AskedForPlayerMarker_then_PlayerMarkerEqualsO()
+        {
+            GameState gameState = _defaultGameSetUpForNewGame.GetInitialGameState();
+
+            Assert.Equal("o", gameState.PlayerList[1].Marker);
+        }
+        
+        [Fact]
+        public void given_userInputEquals2_when_AskedForPlayerType_then_PlayerTypeEqualsGoodComputer()
+        {
+            GameState gameState = _defaultGameSetUpForNewGame.GetInitialGameState();
+
+            Assert.Equal(PlayerType.GoodComputer, gameState.PlayerList[1].Type);
+        }
+        
+        [Fact]
+        public void given_userInputEquals1_when_AskedForStartingPlayer_then_CurrentPlayerEqualsPlayer1()
+        {
+            GameState gameState = _defaultGameSetUpForNewGame.GetInitialGameState();
+
+            Assert.Equal("Player1", gameState.CurrentPlayer.Name);
+        }
+        
+        [Fact]
+        public void given_userInputEqualsThree_when_AskedForGridSize_then_SizeOfGridEqualsThree()
+        {
+            GameState gameState = _defaultGameSetUpForNewGame.GetInitialGameState();
+
+            Assert.Equal(3, gameState.Board.SizeOfBoard);
         }
         
         [Fact]
         public void given_testSavedGameStateContainsSizeOfGridEqualsThree_when_LoadPreviousGame_then_sizeOfGridEqualsThree()
         {
-            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
-
-            GameState gamestate = gameSetUp.LoadPreviousGame("../../../TestSavedGameState.json");
+            GameState gamestate = _defaultGameSetUpForLoadedGame.GetInitialGameState();
 
             Assert.Equal(3, gamestate.Board.SizeOfBoard);
         }
@@ -42,9 +78,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_testSavedGameStateContainsCurrentPlayerEqualsPlayer2_when_LoadPreviousGame_then_currentPlayerEqualsPlayer2()
         {
-            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
-
-            GameState gamestate = gameSetUp.LoadPreviousGame("../../../TestSavedGameState.json");
+            GameState gamestate = _defaultGameSetUpForLoadedGame.GetInitialGameState();
 
             Assert.Equal("Player2", gamestate.CurrentPlayer.Name);
         }
@@ -52,9 +86,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_testSavedGameStateContainsBoardWithPointZeroZeroAsO_when_LoadPreviousGame_then_BoardZeroZeroEqualsO()
         {
-            GameSetUp gameSetUp = new GameSetUp(new UserInput(), new Output());
-
-            GameState gamestate = gameSetUp.LoadPreviousGame("../../../TestSavedGameState.json");
+            GameState gamestate = _defaultGameSetUpForLoadedGame.GetInitialGameState();
 
             Assert.Equal("o", gamestate.Board.GetPoint(0,0));
         }
