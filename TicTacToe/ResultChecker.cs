@@ -67,7 +67,7 @@ namespace TicTacToe
         
         public bool CheckForDraw(Board board)
         {
-            return board.GetNumberOfFreeSpaces() == 0;
+            return board.GetAllFreeSpaces().Count == 0;
         }
     }
 }

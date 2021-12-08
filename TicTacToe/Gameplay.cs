@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
+using TicTacToe.Exceptions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TicTacToe
@@ -33,7 +33,7 @@ namespace TicTacToe
             _playerList = _gameState.PlayerList;
             _currentPlayer = _gameState.CurrentPlayer;
             _board = _gameState.Board;
-            
+
             _gameState = PlayOneRound();
 
             while (UserWantsToPlayAgain())
@@ -45,7 +45,7 @@ namespace TicTacToe
             return _gameState;
         }
 
-        public GameState PlayOneRound()
+        private GameState PlayOneRound()
         {
             _gameState = PlayTurn();
             
@@ -66,31 +66,22 @@ namespace TicTacToe
 
         private GameState PlayTurn()
         {
-            _output.DisplayBoard(_board);
+            Coordinates coordinates;
 
-            _output.DisplayMessage(_currentPlayer.Name + OutputMessages.EnterNextMove);
-            string input = _currentPlayer.GetPlayerMove(_board);
-            
-            List<string> freeSpaces = _board.GetAllFreeSpaces();
-            
-            while (!freeSpaces.Contains(input) && input != Constants.Quit && input != Constants.Save)
+            try
             {
-                _output.DisplayMessage(OutputMessages.InvalidInput);
-                input = _currentPlayer.GetPlayerMove(_board);
+                coordinates = _currentPlayer.GetPlayerMove(_board);
             }
-
-            if (input == Constants.Quit)
+            catch (InputIsQuitException)
             {
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
-
-            if (input == Constants.Save)
+            catch (InputIsSaveException)
             {
+                _gameState = new GameState(_board, _currentPlayer, _playerList, GameStatus.Saved);
                 SaveGameState();
-                return new GameState(_board, _currentPlayer, _playerList, GameStatus.Saved);
+                return _gameState;
             }
-
-            Coordinates coordinates = ConvertInputIntoCoordinates(input);
 
             _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
             _output.DisplayBoard(_board);
@@ -100,16 +91,6 @@ namespace TicTacToe
             return new GameState(_board, _currentPlayer, _playerList, gameStatus);
         }
 
-        private Coordinates ConvertInputIntoCoordinates(string input)
-        {
-            string[] stringArray = input.Split(',');
-            
-            int row = Convert.ToInt32(stringArray[0]);
-            int column = Convert.ToInt32(stringArray[1]);
-            
-            return  new Coordinates(row, column);
-        }
-        
         private Player SwapPlayers(Player currentPlayer)
         {
             return currentPlayer == _playerList[0] ? _playerList[1] : _playerList[0];

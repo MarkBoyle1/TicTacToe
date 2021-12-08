@@ -63,7 +63,7 @@ namespace TicTacToe
 
                 if (type == PlayerType.Human)
                 {
-                    playerList.Add(new HumanPlayer(playerName, marker, 0, _userInput));
+                    playerList.Add(new HumanPlayer(playerName, marker, 0, _userInput, _output));
                 }
                 else if (type == PlayerType.BadComputer)
                 {
@@ -187,7 +187,7 @@ namespace TicTacToe
             
             List<Player> playerList = new List<Player>();
 
-            for (int i = 0; i <= 1; i++)
+            for (int i = 0; i < playerListProperty.Value.Count(); i++)
             {
                 string playerName = playerListProperty.Value[i][Constants.Name].ToString();
                 string playerMarker = playerListProperty.Value[i][Constants.Marker].ToString();
@@ -205,14 +205,14 @@ namespace TicTacToe
                         player = new BadComputerPlayer(playerName, playerMarker, Convert.ToInt16(playerScore));
                         break;
                     default:
-                        player = new HumanPlayer(playerName, playerMarker, Convert.ToInt16(playerScore), _userInput);
+                        player = new HumanPlayer(playerName, playerMarker, Convert.ToInt16(playerScore), _userInput, _output);
                         break;
                 }
 
                 playerList.Add(player);
             }
-            
-            Player currentPlayer = currentPlayerProperty.Name == playerList[0].Name ?  playerList[0] : playerList[1];
+
+            Player currentPlayer = currentPlayerProperty.Value[Constants.Name].ToString() == playerList[0].Name ?  playerList[0] : playerList[1];
 
             return new GameState(board, currentPlayer, playerList, GameStatus.InPlay);
         }

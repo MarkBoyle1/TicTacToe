@@ -1,1 +1,1 @@
-{"Board":{"board":[["X",".","o"],[".","o","."],["X","X","o"]],"SizeOfBoard":3},"PlayerList":[{"Name":"Player1","Marker":"X","Score":1,"Type":0},{"Name":"Player2","Marker":"o","Score":0,"Type":0}],"CurrentPlayer":{"Name":"Player1","Marker":"X","Score":1,"Type":0},"Status":2}
+{"Board":{"board":[[".","o","."],[".","x","."],[".",".","."]],"SizeOfBoard":3},"PlayerList":[{"Name":"Player1","Marker":"x","Score":0,"Type":0},{"Name":"Player2","Marker":"o","Score":0,"Type":1}],"CurrentPlayer":{"Name":"Player1","Marker":"x","Score":0,"Type":0},"Status":4}

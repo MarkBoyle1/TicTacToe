@@ -60,21 +60,9 @@ namespace TicTacToe
             return board[row][column];
         }
 
-        public int GetNumberOfFreeSpaces()
+        public List<Coordinates> GetAllFreeSpaces()
         {
-            int numberOfFreeSpaces = 0;
-            
-            foreach (var row in board)
-            {
-                numberOfFreeSpaces += row.Count(x => x == Constants.FreeSpace);
-            }
-
-            return numberOfFreeSpaces;
-        }
-
-        public List<string> GetAllFreeSpaces()
-        {
-            List<string> freeSpaces = new List<string>();
+            List<Coordinates> freeSpaces = new List<Coordinates>();
 
             for (int i = 0; i < SizeOfBoard; i++)
             {
@@ -82,7 +70,7 @@ namespace TicTacToe
                 {
                     if (board[i][j] == Constants.FreeSpace)
                     {
-                        freeSpaces.Add(i + "," + j);
+                        freeSpaces.Add(new Coordinates(i,j));
                     }
                 }
             }

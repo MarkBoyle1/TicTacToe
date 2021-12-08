@@ -14,9 +14,9 @@ namespace TicTacToe
             _random = new Random();
         }
         
-        public override string GetPlayerMove(Board board)
+        public override Coordinates GetPlayerMove(Board board)
         {
-            string answer = CheckColumns(board);
+            Coordinates answer = CheckColumns(board);
             answer = answer == null ? CheckRows(board) : answer;
             answer = answer == null ? CheckTopLeftToBottomRight(board) : answer;
             answer = answer == null ? CheckTopRightToBottomLeft(board) : answer;
@@ -25,7 +25,7 @@ namespace TicTacToe
             return answer;
         }
         
-        private string CheckColumns(Board board)
+        private Coordinates CheckColumns(Board board)
         {
             for(int column = 0; column < board.SizeOfBoard; column++)
             {
@@ -33,14 +33,14 @@ namespace TicTacToe
                 if (columnArray.Distinct().Count() == 2 && columnArray.Count(x => x == Constants.FreeSpace) == 1)
                 {
                     int indexOfFreeSpace = Array.IndexOf(columnArray, Constants.FreeSpace);
-                    return indexOfFreeSpace + "," + (column);
+                    return new Coordinates(indexOfFreeSpace, column);
                 }
             }
 
             return null;
         }
         
-        private string CheckRows(Board board)
+        private Coordinates CheckRows(Board board)
         {
             for(int row = 0; row < board.SizeOfBoard; row++)
             {
@@ -48,62 +48,65 @@ namespace TicTacToe
                 if (rowArray.Distinct().Count() == 2 && rowArray.Count(x => x == Constants.FreeSpace) == 1)
                 {
                     int indexOfFreeSpace = Array.IndexOf(rowArray, Constants.FreeSpace);
-                    return (row) + "," + indexOfFreeSpace;
+                    return new Coordinates(row, indexOfFreeSpace);
                 }
             }
 
             return null;
         }
         
-        private string CheckTopLeftToBottomRight(Board board)
+        private Coordinates CheckTopLeftToBottomRight(Board board)
         {
             string[] diagonalSlopeRight = board.GetDiangonalTopLeftToBottomRight();
 
             if (diagonalSlopeRight.Distinct().Count() == 2 && diagonalSlopeRight.Count(x => x == Constants.FreeSpace) == 1)
             {
                 int indexOfFreeSpace = Array.IndexOf(diagonalSlopeRight, Constants.FreeSpace);
-                return indexOfFreeSpace + "," + indexOfFreeSpace;
+                return new Coordinates(indexOfFreeSpace, indexOfFreeSpace);
             }
             
             return null;
         }
         
-        private string CheckTopRightToBottomLeft(Board board)
+        private Coordinates CheckTopRightToBottomLeft(Board board)
         {
             string[] diagonalSlopeLeft = board.GetDiangonalTopRightToBottomLeft();
 
             if (diagonalSlopeLeft.Distinct().Count() == 2 && diagonalSlopeLeft.Count(x => x == Constants.FreeSpace) == 1)
             {
                 int indexOfFreeSpace = Array.IndexOf(diagonalSlopeLeft, Constants.FreeSpace);
-                return indexOfFreeSpace + "," + (board.SizeOfBoard - 1 - indexOfFreeSpace);
+                return new Coordinates(indexOfFreeSpace, (board.SizeOfBoard - indexOfFreeSpace - 1));
             }
             
             return null;
         }
 
-        private string GetNextMove(Board board)
+        private Coordinates GetNextMove(Board board)
         {
-            List<string> idealMoves = new List<string>()
+            List<Coordinates> idealMoves = new List<Coordinates>()
             {
-                "0,0",
-                "0," + (board.SizeOfBoard - 1),
-                (board.SizeOfBoard - 1) + ",0",
-                (board.SizeOfBoard - 1) + "," + (board.SizeOfBoard - 1)
+                new Coordinates(0,0),
+                new Coordinates(0,(board.SizeOfBoard - 1)),
+                new Coordinates((board.SizeOfBoard - 1),0),
+                new Coordinates((board.SizeOfBoard - 1),(board.SizeOfBoard - 1))
             };
 
             if (board.SizeOfBoard % 2 != 0)
             {
-                string middleSpace = (board.SizeOfBoard / 2) + "," + (board.SizeOfBoard / 2);
+                Coordinates middleSpace = new Coordinates((board.SizeOfBoard / 2),(board.SizeOfBoard / 2));
                 idealMoves.Insert(0, middleSpace);
             }
 
-            List<string> freeSpaces = board.GetAllFreeSpaces();
+            List<Coordinates> freeSpaces = board.GetAllFreeSpaces();
 
             foreach (var move in idealMoves)
             {
-                if (freeSpaces.Contains(move))
+                foreach (var freeSpace in freeSpaces)
                 {
-                    return move;
+                    if (freeSpace.GetRow() == move.GetRow() && freeSpace.GetColumn() == move.GetColumn())
+                    {
+                        return move;
+                    }
                 }
             }
 

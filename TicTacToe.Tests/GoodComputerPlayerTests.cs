@@ -4,7 +4,7 @@ using Xunit;
 
 namespace TicTacToe.Tests
 {
-    public class PlayerTests
+    public class GoodComputerPlayerTests
     {
         private BoardFactory _boardFactory = new BoardFactory();
         
@@ -18,9 +18,11 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,0), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,0), updatedBoard);
 
-            string computerMove = player.GetPlayerMove(updatedBoard1);
+            Coordinates computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("2,0", computerMove);
+            Assert.Equal(2, computerMove.GetRow());
+            Assert.Equal(0, computerMove.GetColumn());
+
         }
         
         [Fact]
@@ -33,9 +35,10 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,1), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,2), updatedBoard);
 
-            string computerMove = player.GetPlayerMove(updatedBoard1);
+            Coordinates computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("0,0", computerMove);
+            Assert.Equal(0, computerMove.GetRow());
+            Assert.Equal(0, computerMove.GetColumn());
         }
         
         [Fact]
@@ -48,9 +51,10 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,0), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,1), updatedBoard);
 
-            string computerMove = player.GetPlayerMove(updatedBoard1);
+            Coordinates computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("2,2", computerMove);
+            Assert.Equal(2, computerMove.GetRow());
+            Assert.Equal(2, computerMove.GetColumn());
         }
         
         [Fact]
@@ -63,9 +67,10 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(0,2), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("x", new Coordinates(1,1), updatedBoard);
 
-            string computerMove = player.GetPlayerMove(updatedBoard1);
+            Coordinates computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("2,0", computerMove);
+            Assert.Equal(2, computerMove.GetRow());
+            Assert.Equal(0, computerMove.GetColumn());
         }
         
         [Fact]
@@ -78,9 +83,10 @@ namespace TicTacToe.Tests
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(0,2), board);
             Board updatedBoard1 = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(1,1), updatedBoard);
 
-            string computerMove = player.GetPlayerMove(updatedBoard1);
+            Coordinates computerMove = player.GetPlayerMove(updatedBoard1);
             
-            Assert.Equal("2,0", computerMove);
+            Assert.Equal(2, computerMove.GetRow());
+            Assert.Equal(0, computerMove.GetColumn());
         }
         
         [Fact]
@@ -92,9 +98,10 @@ namespace TicTacToe.Tests
 
             Board updatedBoard = _boardFactory.GenerateUpdatedBoard("o", new Coordinates(1,1), board);
             
-            string computerMove = player.GetPlayerMove(updatedBoard);
+            Coordinates computerMove = player.GetPlayerMove(updatedBoard);
             
-            Assert.Equal("0,0", computerMove);
+            Assert.Equal(0, computerMove.GetRow());
+            Assert.Equal(0, computerMove.GetColumn());
         }
         
         [Fact]
@@ -104,9 +111,10 @@ namespace TicTacToe.Tests
             
             Board board = _boardFactory.GenerateEmptyBoard(3);
 
-            string computerMove = player.GetPlayerMove(board);
+            Coordinates computerMove = player.GetPlayerMove(board);
             
-            Assert.Equal("1,1", computerMove);
+            Assert.Equal(1, computerMove.GetRow());
+            Assert.Equal(1, computerMove.GetColumn());
         }
     }
 }

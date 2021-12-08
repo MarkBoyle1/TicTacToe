@@ -73,7 +73,7 @@ namespace TicTacToe.Tests
         [Fact]
         public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
         {
-            Player player = new HumanPlayer("Player1", "x", 0, new TestUserInput(new List<string>() {"1"}));
+            Player player = new HumanPlayer("Player1", "x", 0, new TestUserInput(new List<string>() {"1"}), new Output());
             
             player.IncreaseScoreByOne();
 

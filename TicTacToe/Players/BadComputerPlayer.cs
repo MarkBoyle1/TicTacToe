@@ -13,9 +13,9 @@ namespace TicTacToe
             _random = new Random();
         }
         
-        public override string GetPlayerMove(Board board)
+        public override Coordinates GetPlayerMove(Board board)
         {
-            List<string> freeSpaces = board.GetAllFreeSpaces();
+            List<Coordinates> freeSpaces = board.GetAllFreeSpaces();
             
             int randomIndex = _random.Next(0, freeSpaces.Count);
 
