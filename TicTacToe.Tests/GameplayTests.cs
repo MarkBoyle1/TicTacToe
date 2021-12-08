@@ -13,13 +13,13 @@ namespace TicTacToe.Tests
 
             List<Player> _playerList = new List<Player>()
             {
-                new TestPlayer("Player1", "x", listOfMovesX),
-                new TestPlayer("Player2", "o", listOfMovesO)
+                new TestPlayer("Player1", "x", 0, PlayerType.Human, listOfMovesX),
+                new TestPlayer("Player2", "o", 0, PlayerType.Human, listOfMovesO)
             };
             
             IGameSetUp _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
             
-            Gameplay gameplayXWins = new Gameplay(new TestUserInput(new List<string>() {"n"}), new Output(), _defaultGameSetUp);
+            Gameplay gameplayXWins = new Gameplay(new TestUserInput(new List<string>() {"n", "n"}), new Output(), _defaultGameSetUp);
             
             GameState gameState = gameplayXWins.RunProgram();
             
@@ -35,12 +35,12 @@ namespace TicTacToe.Tests
 
             List<Player> _playerList = new List<Player>()
             {
-                new TestPlayer("Player1", "x", listOfMovesX),
-                new TestPlayer("Player2", "o", listOfMovesO)
+                new TestPlayer("Player1", "x", 0, PlayerType.Human, listOfMovesX),
+                new TestPlayer("Player2", "o", 0, PlayerType.Human, listOfMovesO)
             };
             
             IGameSetUp gameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
-            Gameplay gameplayOWins = new Gameplay(new TestUserInput(new List<string>() {"n"}), new Output(), gameSetUp);
+            Gameplay gameplayOWins = new Gameplay(new TestUserInput(new List<string>() {"n", "n"}), new Output(), gameSetUp);
            
             GameState gameState = gameplayOWins.RunProgram();
             
@@ -57,17 +57,27 @@ namespace TicTacToe.Tests
 
             List<Player> _playerList = new List<Player>()
             {
-                new TestPlayer("Player1", "x", listOfMovesX),
-                new TestPlayer("Player2", "o", listOfMovesO)
+                new TestPlayer("Player1", "x", 0, PlayerType.Human, listOfMovesX),
+                new TestPlayer("Player2", "o", 0, PlayerType.Human, listOfMovesO)
             };
             
             IGameSetUp _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
             
-            Gameplay gameplayDraw = new Gameplay(new TestUserInput(new List<string>() {"n"}), new Output(), _defaultGameSetUp);
+            Gameplay gameplayDraw = new Gameplay(new TestUserInput(new List<string>() {"n", "n"}), new Output(), _defaultGameSetUp);
             
             GameState gameState = gameplayDraw.RunProgram();
             
             Assert.Equal(GameStatus.Draw, gameState.Status);
+        }
+        
+        [Fact]
+        public void given_playerScoreEquals0_when_IncreaseScoreByOne_then_PlayerScoreEquals1()
+        {
+            Player player = new HumanPlayer("Player1", "x", 0, new TestUserInput(new List<string>() {"1"}), new Output());
+            
+            player.IncreaseScoreByOne();
+
+            Assert.Equal(1, player.Score);
         }
         
         [Fact]
@@ -79,8 +89,8 @@ namespace TicTacToe.Tests
 
             List<Player> _playerList = new List<Player>()
             {
-                new TestPlayer("Player1", "x", listOfMovesX),
-                new TestPlayer("Player2", "o", listOfMovesO)
+                new TestPlayer("Player1", "x", 0, PlayerType.Human, listOfMovesX),
+                new TestPlayer("Player2", "o", 0, PlayerType.Human, listOfMovesO)
             };
             
             IGameSetUp _defaultGameSetUp = new TestGameSetUp(new BoardFactory(), 3, _playerList);
@@ -88,7 +98,7 @@ namespace TicTacToe.Tests
             
             GameState gameState = gameplayTwoGames.RunProgram();
             
-            Assert.Equal(2, gameState._playerList[0].Score);
+            Assert.Equal(2, gameState.PlayerList[0].Score);
         }
     }
 }

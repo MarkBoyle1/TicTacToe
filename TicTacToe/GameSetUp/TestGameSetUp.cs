@@ -10,14 +10,15 @@ namespace TicTacToe
 
         public TestGameSetUp(BoardFactory boardFactory, int sizeOfBoard, List<Player> playerList)
         {
-            _board = boardFactory.GenerateInitialBoard(sizeOfBoard);
+            _board = boardFactory.GenerateEmptyBoard(sizeOfBoard);
             _playerList = playerList;
             _currentPlayer = playerList[0];
         }
 
-        public GameState SetUpGame()
+        public GameState GetInitialGameState()
         {
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
         }
+            
     }
 }

@@ -5,6 +5,7 @@ namespace TicTacToe
         Win,
         Draw,
         InPlay,
-        Quit
+        Quit,
+        Saved
     }
 }

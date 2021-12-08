@@ -1,5 +1,7 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
+using TicTacToe.Exceptions;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace TicTacToe
 {
@@ -14,9 +16,6 @@ namespace TicTacToe
         private BoardFactory _boardFactory;
         private GameState _gameState;
         private IGameSetUp _gameSetUp;
-        private string Quit = "q";
-        private string Yes = "y";
-        private string No = "n";
 
         public Gameplay(IUserInput input, IOutput output, IGameSetUp gameSetUp)
         {
@@ -29,29 +28,24 @@ namespace TicTacToe
         
         public GameState RunProgram()
         {
-            SetUpInitialGame();
-            _gameState = PlayOneGame();
+            _gameState = _gameSetUp.GetInitialGameState();
+            
+            _playerList = _gameState.PlayerList;
+            _currentPlayer = _gameState.CurrentPlayer;
+            _board = _gameState.Board;
+
+            _gameState = PlayOneRound();
 
             while (UserWantsToPlayAgain())
             {
                 _gameState = ResetGameState();
-                _gameState = PlayOneGame();
+                _gameState = PlayOneRound();
             }
 
             return _gameState;
         }
 
-        public void SetUpInitialGame()
-        {
-            _output.DisplayMessage(OutputMessages.WelcomeMessage);
-            _gameState = _gameSetUp.SetUpGame();
-            
-            _playerList = _gameState._playerList;
-            _currentPlayer = _gameState.CurrentPlayer;
-            _board = _gameState._board;
-        }
-
-        public GameState PlayOneGame()
+        private GameState PlayOneRound()
         {
             _gameState = PlayTurn();
             
@@ -61,25 +55,33 @@ namespace TicTacToe
                 _gameState = PlayTurn();
             }
 
-            UpdateScoreForWinner(_gameState);
-            _output.DisplayScores(_gameState._playerList);
-            
+            if (_gameState.Status is GameStatus.Win or GameStatus.Quit)
+            {
+                UpdateScoreForWinner(_gameState);
+                _output.DisplayScores(_gameState.PlayerList);
+            }
+
             return _gameState;
         }
 
         private GameState PlayTurn()
         {
-            _output.DisplayBoard(_board);
+            Coordinates coordinates;
 
-            _output.DisplayMessage(OutputMessages.EnterNextMove);
-            string input = _currentPlayer.GetPlayerMove(_board);
-
-            if (input == Quit)
+            try
+            {
+                coordinates = _currentPlayer.GetPlayerMove(_board);
+            }
+            catch (InputIsQuitException)
             {
                 return new GameState(_board, _currentPlayer, _playerList, GameStatus.Quit);
             }
-
-            Coordinates coordinates = ConvertInputIntoCoordinates(input);
+            catch (InputIsSaveException)
+            {
+                _gameState = new GameState(_board, _currentPlayer, _playerList, GameStatus.Saved);
+                SaveGameState();
+                return _gameState;
+            }
 
             _board = _boardFactory.GenerateUpdatedBoard(_currentPlayer.Marker, coordinates, _board);
             _output.DisplayBoard(_board);
@@ -89,16 +91,6 @@ namespace TicTacToe
             return new GameState(_board, _currentPlayer, _playerList, gameStatus);
         }
 
-        private Coordinates ConvertInputIntoCoordinates(string input)
-        {
-            string[] stringArray = input.Split(',');
-            
-            int row = Convert.ToInt32(stringArray[0]);
-            int column = Convert.ToInt32(stringArray[1]);
-            
-            return  new Coordinates(row, column);
-        }
-        
         private Player SwapPlayers(Player currentPlayer)
         {
             return currentPlayer == _playerList[0] ? _playerList[1] : _playerList[0];
@@ -122,21 +114,27 @@ namespace TicTacToe
             _output.DisplayMessage(OutputMessages.PlayAnotherGameQuestion);
             string response = _input.GetUserInput();
 
-            while (response != Yes && response != No)
+            while (response != Constants.Yes && response != Constants.No)
             {
                 _output.DisplayMessage(OutputMessages.InvalidInput);
                 response = _input.GetUserInput();
             }
-            
-            return response == Yes;
+
+            return response == Constants.Yes;
         }
 
         private GameState ResetGameState()
         {
-            _board = _boardFactory.GenerateInitialBoard(_board.SizeOfBoard);
+            _board = _boardFactory.GenerateEmptyBoard(_board.SizeOfBoard);
             _currentPlayer = SwapPlayers(_currentPlayer);
             
             return new GameState(_board, _currentPlayer, _playerList, GameStatus.InPlay);
+        }
+
+        private void SaveGameState()
+        {
+            string gameStateJsonString = JsonSerializer.Serialize(_gameState);
+            File.WriteAllText(Constants.SavedGameStateFilePath, gameStateJsonString);
         }
     }
 }

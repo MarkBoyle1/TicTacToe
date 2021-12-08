@@ -4,16 +4,16 @@ namespace TicTacToe
 {
     public class BoardFactory
     {
-        public Board GenerateInitialBoard(int sizeOfBoard)
+        public Board GenerateEmptyBoard(int sizeOfBoard)
         {
             string[][] board = new string[sizeOfBoard][];
             board = board.Select
                 (
-                    x => new string[sizeOfBoard].Select(x => ".").ToArray()
+                    x => new string[sizeOfBoard].Select(x => Constants.FreeSpace).ToArray()
                 )
                 .ToArray();
             
-            return new Board(board);
+            return new Board(board, sizeOfBoard);
         }
         
         public Board GenerateUpdatedBoard(string marker, Coordinates coordinates, Board board)
@@ -33,7 +33,7 @@ namespace TicTacToe
 
             updatedBoard[coordinates.GetRow()][coordinates.GetColumn()] = marker;
             
-            return new Board(updatedBoard);
+            return new Board(updatedBoard, sizeOfBoard);
         }
     }
 }

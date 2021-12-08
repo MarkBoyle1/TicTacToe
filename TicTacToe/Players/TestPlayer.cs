@@ -6,18 +6,18 @@ namespace TicTacToe
     {
         private List<string> _listOfMoves;
         
-        public TestPlayer(string name, string marker, List<string> moves)
-            : base(name, marker)
+        public TestPlayer(string name, string marker, int score, PlayerType type, List<string> moves)
+            : base(name, marker, score, type)
         {
             _listOfMoves = moves;
         }
         
-        public override string GetPlayerMove(Board board)
+        public override Coordinates GetPlayerMove(Board board)
         {
             string move = _listOfMoves[0];
             _listOfMoves.RemoveAt(0);
             
-            return move;
+            return ConvertInputIntoCoordinates(move);
         }
     }
 }

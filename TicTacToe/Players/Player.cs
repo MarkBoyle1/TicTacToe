@@ -1,3 +1,6 @@
+
+using System;
+
 namespace TicTacToe
 {
     public abstract class Player
@@ -5,21 +8,34 @@ namespace TicTacToe
         public string Name { get; }
         public string Marker { get; }
         public int Score { get; set; }
-
-        public Player(string name, string marker)
+        public PlayerType Type { get; }
+        
+        public Player(string Name, string Marker, int score, PlayerType type)
         {
-            Name = name;
-            Marker = marker;
+            this.Name = Name;
+            this.Marker = Marker;
+            Score = score;
+            Type = type;
         }
 
         public void IncreaseScoreByOne()
         {
             Score += 1;
         }
-
-        public virtual string GetPlayerMove(Board _board)
+        
+        public Coordinates ConvertInputIntoCoordinates(string input)
         {
-            return "0";
+            string[] stringArray = input.Split(',');
+            
+            int row = Convert.ToInt32(stringArray[0]);
+            int column = Convert.ToInt32(stringArray[1]);
+            
+            return  new Coordinates(row, column);
+        }
+
+        public virtual Coordinates GetPlayerMove(Board _board)
+        {
+            return null;
         }
     }
 }

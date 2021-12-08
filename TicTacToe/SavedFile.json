@@ -1,0 +1,1 @@
+{"Board":{"board":[[".","o","."],[".","x","."],[".",".","."]],"SizeOfBoard":3},"PlayerList":[{"Name":"Player1","Marker":"x","Score":0,"Type":0},{"Name":"Player2","Marker":"o","Score":0,"Type":1}],"CurrentPlayer":{"Name":"Player1","Marker":"x","Score":0,"Type":0},"Status":4}
